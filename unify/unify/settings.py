@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'UserAuthentication',
+
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'unify.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+    'UserAuthentication.authentication_backends.StudentFacultyBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 
 # Database
