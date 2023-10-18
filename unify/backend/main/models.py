@@ -4,15 +4,14 @@ from django.contrib.postgres.fields import ArrayField
 
 # School table
 class School(models.Model):
-    Id = models.AutoField(primary_key=True)
+    Code = models.CharField(max_length=10,primary_key=True,default=None)
     Name = models.CharField(max_length=50)
 
 # Department table
 class Department(models.Model):
-    Id = models.AutoField(primary_key=True)
     SchoolId = models.ForeignKey(School,on_delete=models.CASCADE)
     Name = models.CharField(max_length=100)
-    Code = models.CharField(max_length=10)
+    Code = models.CharField(max_length=10,primary_key=True)
 
 # Course table
 class Course(models.Model):

@@ -21,5 +21,7 @@ from AddData import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('',include('main.urls')),
-    path('addstudent/',views.AddStudent,name='addStudent')
+    path('addstudent/',views.AddStudent,name='addStudent'),
+    path('addstudents/',views.AddStudents,name='addStudents'),
+    path('addschool/',views.AddSchool,name='addSchool'),
 ]
