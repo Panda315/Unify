@@ -75,17 +75,29 @@ WSGI_APPLICATION = 'unify.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME' : 'railway',
+#         'USER' : 'postgres',
+#         'PASSWORD' : 'HUKTyDzAH0IWNFSxwZUk',
+#         'HOST' : 'containers-us-west-83.railway.app',
+#         'PORT' : '7111',
+
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME' : 'railway',
         'USER' : 'postgres',
-        'PASSWORD' : 'HUKTyDzAH0IWNFSxwZUk',
-        'HOST' : 'containers-us-west-83.railway.app',
-        'PORT' : '7111',
-
+        'PASSWORD' : 'atKljsziu7ljUIyx9hrN',
+        'HOST' : 'containers-us-west-68.railway.app',
+        'PORT' : '7937',
     }
 }
+
 
 
 # Password validation
