@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,check_password
 from django.core import serializers
 from django.http import JsonResponse
-from main.models import Student, Faculty, Event, School
+from main.models import Student, Faculty, Event, School,Department, Course
 import json
 
 # Create your views here.
@@ -73,6 +73,40 @@ def AddSchool(request):
 
     try:
         School.objects.create(Code=code,Name=name)
+        return JsonResponse({'message':'sucessful'},status=200)
+    except:
+        return JsonResponse({'message':'Error'},status=500)
+    
+# save department
+@csrf_exempt
+def AddDepartment(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        code = data.get('code')
+        name = data.get('name')
+        school_code = data.get('school_code')
+
+    try:
+        school_instance = School.objects.get(Code=school_code)
+        Department.objects.create(Code=code,Name=name,SchoolCode=school_instance)
+        return JsonResponse({'message':'sucessful'},status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'message':'Error'},status=500)
+
+# save course
+@csrf_exempt
+def AddCourse(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        code = data.get('code')
+        name = data.get('name')
+        credit_hour = data.get('credit_hour')
+        description = data.get('description')
+        dept_code = data.get('dept_code')
+
+    try:
+        Course.objects.create(Code=code,Name=name,CreditHour=credit_hour,Description=description,DeptCode=dept_code)
         return JsonResponse({'message':'sucessful'},status=200)
     except:
         return JsonResponse({'message':'Error'},status=500)

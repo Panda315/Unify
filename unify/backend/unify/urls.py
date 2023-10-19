@@ -24,4 +24,6 @@ urlpatterns = [
     path('addstudent/',views.AddStudent,name='addStudent'),
     path('addstudents/',views.AddStudents,name='addStudents'),
     path('addschool/',views.AddSchool,name='addSchool'),
+    path('adddepartment/',views.AddDepartment,name='addDepartment'),
+    path('addcourse/',views.AddCourse,name='addCourse'),
 ]
