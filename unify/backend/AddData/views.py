@@ -8,13 +8,24 @@ import json
 
 # Create your views here.
 @csrf_exempt
-def AddStudent(request):
+def AddFaculty(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        id = data.get('id')
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        dob = data.get('dob')
         email = data.get('email')
-        print(data)
-        print(email)
-        return JsonResponse({'message':"checking"},status=200)
+        password = make_password(data.get('password'))
+        dept_id = data.get('dept')
+
+    try:
+        dept_instance = Department.objects.get(Code=dept_id)
+        Faculty.objects.create(Id=id,FirstName=firstname,LastName=lastname,Dob=dob,Email=email,Password=password,DeptCode=dept_instance)
+        return JsonResponse({'message':'sucessful'},status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'message':'Error'},status=500)
     
 
 # save events
@@ -46,10 +57,11 @@ def Events(request):
     
 # save students
 @csrf_exempt
-def AddStudents(request):
+def AddStudent(request):
     if request.method == 'POST':
         print("Hello World !!!!!")
         data = json.loads(request.body)
+        id = data.get('id')
         firstname = data.get('firstname')
         lastname = data.get('lastname')
         dob = data.get('dob')
@@ -58,9 +70,12 @@ def AddStudents(request):
         dept_id = data.get('dept')
 
     try:
-        Student.objects.create(FirstName=firstname,LastName=lastname,DOB=dob,Email=email,Password=password,DeptId=dept_id)
+        dept_instance = Department.objects.get(Code=dept_id)
+        print(dept_instance)
+        Student.objects.create(Id=id,FirstName=firstname,LastName=lastname,Dob=dob,Email=email,Password=password,DeptCode=dept_instance)
         return JsonResponse({'message':'sucessful'},status=200)
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({'message':'Error'},status=500)
     
 # save school

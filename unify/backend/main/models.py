@@ -1,5 +1,14 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import User
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    is_student = models.BooleanField(default=False)
+    is_faculty = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.user)
 
 # School table
 class School(models.Model):
@@ -30,7 +39,7 @@ class Student(models.Model):
     Email = models.EmailField()
     Password = models.CharField(max_length=200)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE)
-    ClassroomId = ArrayField(models.IntegerField())
+    ClassroomId = ArrayField(models.IntegerField(null=True,blank=True),default=list)
 
 # Faculty table
 class Faculty(models.Model):
@@ -42,7 +51,7 @@ class Faculty(models.Model):
     Email = models.EmailField()
     Password = models.CharField(max_length=200)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
-    ClassroomId = ArrayField(models.IntegerField())
+    ClassroomId = ArrayField(models.IntegerField(null=True,blank=True),default=list)
 
 # Routine table
 class Routine(models.Model):
@@ -64,7 +73,7 @@ class Classroom(models.Model):
     FacultyId = models.ForeignKey(Faculty,on_delete=models.CASCADE)
     CourseCode = models.ForeignKey(Course,on_delete=models.CASCADE)
     InstructorName = models.CharField(max_length=30)
-    StudentId = ArrayField(models.CharField(max_length=12))
+    StudentId = ArrayField(models.CharField(max_length=12,null=True,blank=True),default=list)
 
 # Attendance table
 class Attendance(models.Model):
@@ -120,7 +129,7 @@ class Administrator(models.Model):
 # table to store the info about the buildings of ku
 class Building(models.Model):
     Id = models.AutoField(primary_key=True)
-    Room = ArrayField(models.IntegerField())
+    Room = ArrayField(models.IntegerField(null=True,blank=True),default=list)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
 
 # to store the information about all the rooms of ku
