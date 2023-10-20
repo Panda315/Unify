@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'AddData'
+    'AddData',
+    'UserAuthentication'
+]
+
+AUTHENTICATION_BACKENDS = [
+    'UserAuthentication.backends.CustomAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -74,31 +81,16 @@ WSGI_APPLICATION = 'unify.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME' : 'railway',
-#         'USER' : 'postgres',
-#         'PASSWORD' : 'HUKTyDzAH0IWNFSxwZUk',
-#         'HOST' : 'containers-us-west-83.railway.app',
-#         'PORT' : '7111',
-
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME' : 'railway',
-        'USER' : 'postgres',
-        'PASSWORD' : 'UUerIC3ZyyovUI9FT16M',
-        'HOST' : 'containers-us-west-135.railway.app',
-        'PORT' : '7983',
+        'USER' : config.R_USER,
+        'PASSWORD' : config.R_PASSWORD,
+        'HOST' : config.R_HOST,
+        'PORT' : config.R_PORT,
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
