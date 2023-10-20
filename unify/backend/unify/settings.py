@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import config
+from unify.config import R_HOST,R_USER,R_PASSWORD,R_PORT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,10 +85,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME' : 'railway',
-        'USER' : config.R_USER,
-        'PASSWORD' : config.R_PASSWORD,
-        'HOST' : config.R_HOST,
-        'PORT' : config.R_PORT,
+        'USER' : R_USER,
+        'PASSWORD' : R_PASSWORD,
+        'HOST' : R_HOST,
+        'PORT' : R_PORT,
     }
 }
 

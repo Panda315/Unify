@@ -1,6 +1,6 @@
 // import SignUp from './components/signup'
-// import Calender from './components/Student/Calender'
 import Events from './components/Student/Events'
+import SignUp from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
 export function App() {
 
@@ -8,7 +8,7 @@ export function App() {
     <ChakraProvider>
       {/* <SignUp /> */}
       {/* <Calender/> */}
-<Events/>    
+      <Events/>    
 </ChakraProvider>
 
   )
