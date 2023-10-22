@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import NavBar from './components/Navbar/Navbar';
 import Home from './components/Home';
-import Events from './components/Student/Events'
+import ViewEvents from './components/Events/ViewEvents'
+import CreateEvent from './components/Events/CreateEvent'
 import SignUp from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
 
@@ -17,7 +18,8 @@ export function App() {
         <Routes>
           <Route exact path="/" Component={Home} />
           <Route exact path="/signup" Component={SignUp} />
-          <Route exact path="/events" Component={Events} />
+          <Route exact path="/events" Component={ViewEvents} />
+          <Route exact path="/events/create" Component={CreateEvent} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

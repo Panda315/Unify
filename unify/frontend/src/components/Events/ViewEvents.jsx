@@ -50,7 +50,7 @@ const sectionsData = [
   },
 ];
 
-function Events() {
+function ViewEvents() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalContent, setModalContent] = useState({ title: '', description: '', img: '' });
@@ -183,4 +183,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default ViewEvents;
