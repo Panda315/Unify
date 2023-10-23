@@ -8,6 +8,7 @@ import ViewEvents from './components/Events/ViewEvents'
 import CreateEvent from './components/Events/CreateEvent'
 import SignUp from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
+import Classroom from './components/Classroom/Classroom';
 
 export function App() {
   const currentUrl = window.location.pathname;
@@ -20,6 +21,7 @@ export function App() {
           <Route exact path="/signup" Component={SignUp} />
           <Route exact path="/events" Component={ViewEvents} />
           <Route exact path="/events/create" Component={CreateEvent} />
+          <Route exact path='/classroom' Component={Classroom}/>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

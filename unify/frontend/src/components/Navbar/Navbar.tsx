@@ -266,4 +266,8 @@ const NAV_ITEMS: Array<NavItem> = [
       },
     ],
   },
+  {
+    label: 'Classroom',
+    href: '/classroom'
+  }
 ]
