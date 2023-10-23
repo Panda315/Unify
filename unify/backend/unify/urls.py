@@ -28,5 +28,7 @@ urlpatterns = [
     path('adddepartment/',AddData_views.AddDepartment,name='addDepartment'),
     path('addcourse/',AddData_views.AddCourse,name='addCourse'),
     path('login/',UserAuthentication_views.login_view,name='login'),
-    path('logout/',UserAuthentication_views.logout_view,name='logout')
+    path('logout/',UserAuthentication_views.logout_view,name='logout'),
+
+    path('events/', include('events.urls')),
 ]
