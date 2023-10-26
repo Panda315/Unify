@@ -62,6 +62,7 @@ function CreateEvent() {
     }
 
     const handleSubmit = (event) => {
+        console.log(selectedCategory)
         const formData = new FormData();
 
         formData.append('title', title);
@@ -71,17 +72,21 @@ function CreateEvent() {
         formData.append('coverImage', image);
         formData.append('description', description);
 
-        fetch('http://127.0.0.1:8000/events/event_create', {
+        fetch('http://127.0.0.1:8000/events/event_create/', {
             method: 'POST',
             body: formData,
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-            })
-            .catch(error => {
-                console.error('Error: ', error)
-            })
+        .then(response => {
+            if (response.status === 200) {
+                console.log('Message', response)
+                window.location.href = '/events';  // Replace with the desired path
+            } else {
+                console.error('Error:', response);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     return (

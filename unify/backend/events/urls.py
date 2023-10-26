@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('category_list/', views.category_list),
+    path('event_create/', views.event_create),
 ]
 
 if settings.DEBUG:
