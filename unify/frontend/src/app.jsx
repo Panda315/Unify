@@ -6,7 +6,7 @@ import NavBar from './components/Navbar/Navbar';
 import Home from './components/Home';
 import ViewEvents from './components/Events/ViewEvents'
 import CreateEvent from './components/Events/CreateEvent'
-import SignUp from './components/signup'
+import Login from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
 import Classroom from './components/Classroom/Classroom';
 
@@ -14,14 +14,15 @@ export function App() {
   const currentUrl = window.location.pathname;
   return (
     <ChakraProvider>
-      {currentUrl !== '/signup' && <NavBar />}
+      {currentUrl !== '/login' && <NavBar />}
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" Component={Home} />
-          <Route exact path="/signup" Component={SignUp} />
-          <Route exact path="/events" Component={ViewEvents} />
-          <Route exact path="/events/create" Component={CreateEvent} />
-          <Route exact path='/classroom' Component={Classroom}/>
+          <Route exact path="/" Component={Login} />
+          <Route exact path="/student" Component={Home} />
+          <Route exact path="/login" Component={Login} />
+          <Route exact path="/student/events" Component={ViewEvents} />
+          <Route exact path="/student/events/create" Component={CreateEvent} />
+          <Route exact path='/student/classroom' Component={Classroom}/>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

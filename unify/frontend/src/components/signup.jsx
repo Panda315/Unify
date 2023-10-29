@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   Box,
   Button,
@@ -14,8 +14,51 @@ import {
   Text,
   Heading,
 } from '@chakra-ui/react';
+import { redirect } from 'react-router-dom';
 
-function SignUp() {
+function Login() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+    const HandleSubmit = async (e) => {
+      console.log(email)
+      console.log(password)
+      try{
+        e.preventDefault();
+        const response = await fetch('http://localhost:8000/login/',{
+          method : "POST",
+          headers :{
+            'Content-Type' : "application/json"
+          },
+          body : JSON.stringify({
+            password  : password,
+            email : email
+          })
+        });
+  
+      if (response.status === 200){
+        const data = await response.json()
+        console.log(data.token)
+        window.location.href = "/student"
+      }
+      else if(response.status === 201){
+        const data = await response.json()
+        console.log(data.token)
+        window.location.href = "/student/classroom"
+      }
+      else {
+        alert("Invalid Email or Password");
+      }
+
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+
+
   return (
     <ChakraProvider>
       <Box
@@ -41,43 +84,33 @@ function SignUp() {
           mr={10}
         >
           <Box textAlign="center" mb={5}>
-            <Heading>Sign Up</Heading>
+            <Heading>Login</Heading>
           </Box>
 
-          <form>
+          <form onSubmit={HandleSubmit}>
             <Grid templateColumns="1fr 1fr" gap={4}>
-              <GridItem colSpan={1}>
-                <FormControl id="firstName" isRequired>
-                  <FormLabel>First Name</FormLabel>
-                  <Input type="text" placeholder="John" />
-                </FormControl>
-              </GridItem>
-
-              <GridItem colSpan={1}>
-                <FormControl id="middleName">
-                  <FormLabel>Middle Name</FormLabel>
-                  <Input type="text" placeholder="Lee" />
-                </FormControl>
-              </GridItem>
-
-              <GridItem colSpan={2}>
-                <FormControl id="lastName" isRequired>
-                  <FormLabel>Last Name</FormLabel>
-                  <Input type="text" placeholder="Doe" />
-                </FormControl>
-              </GridItem>
 
               <GridItem colSpan={2}>
                 <FormControl id="email" isRequired>
-                  <FormLabel>Email address</FormLabel>
-                  <Input type="email" placeholder="john@example.com" />
+                  <FormLabel>Email</FormLabel>
+                  <Input type="email" 
+                  placeholder="john@example.com" 
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  />
                 </FormControl>
               </GridItem>
 
               <GridItem colSpan={2}>
                 <FormControl id="password" isRequired>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" placeholder="********" />
+                  <Input type="password" 
+                  placeholder="********" 
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  />
                 </FormControl>
               </GridItem>
 
@@ -110,4 +143,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;
