@@ -79,11 +79,40 @@ export default function WithSubnavigation() {
             fontWeight={600}
             color={'white'}
             bg={'blue.400'}
-            href={'/login'}
+            onClick={async() => {
+              try{
+                const response = await fetch('http://localhost:8000/logout/',{
+                  method : "GET",
+                  headers :{
+                    'Content-Type' : "application/json"
+                  },
+                });
+                
+              console.log(
+                `Response received with status code ${response.status}`
+              )
+
+              if (response.status === 200){
+                console.log("here")
+                localStorage.removeItem('token')
+                localStorage.removeItem('role')
+                window.location.href = "/login"
+              }
+
+              else {
+                alert("Can not log out right now !!");
+              }
+        
+              }
+              catch(error){
+                console.log(error)
+              }
+              
+            }}
             _hover={{
               bg: 'blue.300',
             }}>
-            Login
+            Logout
           </Button>
         </Stack>
       </Flex>
@@ -248,26 +277,26 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: 'Home',
-    href: '/'
+    href: '/student'
   },
   {
     label: 'Events',
-    href: '/events',
+    href: '/student/events',
     children: [
       {
         label: 'View Events',
         subLabel: 'See the list of events',
-        href: '/events',
+        href: '/student/events',
       },
       {
         label: 'Create Event',
         subLabel: 'Create an event',
-        href: '/events/create',
+        href: '/student/events/create',
       },
     ],
   },
   {
     label: 'Classroom',
-    href: '/classroom'
+    href: '/student/classroom'
   }
 ]

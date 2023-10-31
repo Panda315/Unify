@@ -12,8 +12,8 @@ class CustomAuthenticationBackend(ModelBackend):
             if check_password(password,student.Password):
                 try:
                     # user,created = User.objects.get_or_create(email=student.Email)[0]
-                    user,created = User.objects.get_or_create(email=student.Email,first_name=student.FirstName,last_name=student.LastName)
-                    Profile.objects.update_or_create(user=user,defaults={"is_student":True})
+                    user,created = User.objects.get_or_create(username=student.Email,email=student.Email,first_name=student.FirstName,last_name=student.LastName)
+                    Profile.objects.update_or_create(user=user,defaults={"is_student":True,"is_faculty":False})
                     return user
                 except Exception as e:
                     print(e)
@@ -24,8 +24,8 @@ class CustomAuthenticationBackend(ModelBackend):
             faculty = Faculty.objects.get(Email=email)
             if check_password(password,faculty.Password):
                 try:
-                    user,created = User.objects.get_or_create(email=faculty.Email,first_name=faculty.FirstName,last_name=faculty.LastName)
-                    Profile.objects.update_or_create(user=user,defaults={"is_faculty":True})
+                    user,created = User.objects.get_or_create(username=faculty.Email,email=faculty.Email,first_name=faculty.FirstName,last_name=faculty.LastName)
+                    Profile.objects.update_or_create(user=user,defaults={"is_student":False,"is_faculty":True})
                     return user
                 except Exception as e:
                     print(e)

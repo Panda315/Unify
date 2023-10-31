@@ -47,7 +47,6 @@ class Faculty(models.Model):
     FirstName = models.CharField(max_length=50)
     LastName = models.CharField(max_length=50)
     Dob = models.DateField()
-    country = models.CharField(max_length=50)
     Email = models.EmailField()
     Password = models.CharField(max_length=200)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)

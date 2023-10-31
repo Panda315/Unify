@@ -23,8 +23,6 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
 
     const HandleSubmit = async (e) => {
-      console.log(email)
-      console.log(password)
       try{
         e.preventDefault();
         const response = await fetch('http://localhost:8000/login/',{
@@ -37,15 +35,21 @@ function Login() {
             email : email
           })
         });
-  
+        
+      console.log(
+        `Response received with status code ${response.status}`
+      )
       if (response.status === 200){
+        console.log("here")
         const data = await response.json()
-        console.log(data.token)
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role',"student")
         window.location.href = "/student"
       }
       else if(response.status === 201){
         const data = await response.json()
-        console.log(data.token)
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role',"faculty")
         window.location.href = "/student/classroom"
       }
       else {

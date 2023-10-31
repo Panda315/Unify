@@ -15,6 +15,7 @@ def login_view(request):
         password = data.get('password')
 
         user = authenticate(request,email=email,password=password)
+        print(user)
         if user is not None:
             login(request,user)
             token, _ = Token.objects.get_or_create(user=user)
@@ -33,4 +34,4 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return JsonResponse({"message" : "Logged Out"},status=200)

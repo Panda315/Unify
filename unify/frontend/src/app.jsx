@@ -10,6 +10,14 @@ import Login from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
 import Classroom from './components/Classroom/Classroom';
 
+// Create a function to check if the user is authenticated
+const isAuthenticated = () => {
+  const userId = localStorage.getItem('token');
+  
+  // Return true if the user ID is present, indicating the user is logged in
+  return !!userId;
+};
+
 export function App() {
   const currentUrl = window.location.pathname;
   return (
@@ -18,13 +26,17 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" Component={Login} />
-          <Route exact path="/student" Component={Home} />
           <Route exact path="/login" Component={Login} />
-          <Route exact path="/student/events" Component={ViewEvents} />
-          <Route exact path="/student/events/create" Component={CreateEvent} />
-          <Route exact path='/student/classroom' Component={Classroom}/>
+          {isAuthenticated() && <Route exact path="/student" Component={Home} />}
+          {isAuthenticated() && <Route exact path="/student/events" Component={ViewEvents} />}
+          {isAuthenticated() && <Route exact path="/student/events/create" Component={CreateEvent} />}
+          {isAuthenticated() && <Route exact path='/student/classroom' element={<Classroom/>}/>}
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
   )
 }
+
+
+
+
