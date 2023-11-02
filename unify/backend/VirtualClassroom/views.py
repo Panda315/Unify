@@ -108,3 +108,36 @@ def DeleteClassroom(request):
         except Exception as e:
             print(e)
             return JsonResponse({'message':"Can not delete classroom"},status=500)
+        
+
+# fetch classroom for students
+@csrf_exempt
+def LoadClassrooms(request):
+    data = json.loads(request.body)
+    token = data.get('token')
+    role = data.get('role')
+    token = Token.objects.get(key=token)
+    user = User.objects.get(id=token.user_id)
+            
+    try:
+        if role == "student":
+            student = Student.objects.get(Email=user.email)
+            classrooms = Classroom.objects.filter(Id__in=student.ClassroomId)
+            classroom_data = classrooms.values('Id','ClassroomCode','CourseName','CourseCode','InstructorName')
+            response = list(classroom_data)
+            return JsonResponse(response,safe=False,status=200)
+        else:
+            instructor = Faculty.objects.get(Email=user.email)
+            classrooms = Classroom.objects.filter(Id__in=instructor.ClassroomId)
+            classroom_data = classrooms.values('Id','ClassroomCode','CourseName','CourseCode','InstructorName')
+            response = list(classroom_data)
+            return JsonResponse(response,safe=False,status=200)
+    except Exception as e:
+        return JsonResponse({'message':'not sucess'},status=500)
+        pass
+
+
+# fetch classroom for faculty
+# save pdfs(for assignments)
+
+
