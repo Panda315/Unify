@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from AddData import views as AddData_views
 from UserAuthentication import views as UserAuthentication_views
-from rest_framework.authtoken.views import obtain_auth_token
+from VirtualClassroom import views as VirtualClassroom_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +32,7 @@ urlpatterns = [
     path('logout/',UserAuthentication_views.logout_view,name='logout'),
     # path('/login/token/',obtain_auth_token,name='token_obtain_pair'),
     path('events/', include('events.urls')),
+    path('createclassroom/',VirtualClassroom_views.CreateClassroom,name="createClassroom"),
+    path('joinclassroom/',VirtualClassroom_views.JoinClassroom,name="joinClassroom"),
+    path('deleteclassroom/',VirtualClassroom_views.DeleteClassroom,name="deleteClassroom"),
 ]

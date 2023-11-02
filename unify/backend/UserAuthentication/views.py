@@ -1,5 +1,4 @@
 from django.contrib.auth import login,authenticate,logout
-from django.contrib.auth.models import User
 from django.core import serializers
 from rest_framework.authtoken.models import Token
 from django.shortcuts import render,redirect

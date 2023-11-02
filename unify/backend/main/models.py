@@ -22,10 +22,17 @@ class Department(models.Model):
     Code = models.CharField(max_length=10,primary_key=True,default=None)
 
 # Course table
+# class Course(models.Model):
+#     Id = models.AutoField(primary_key=True,default=None)
+#     Name = models.CharField(max_length=50)
+#     code = models.CharField(max_length=8)
+#     CreditHour = models.IntegerField()
+#     Description = models.CharField(max_length = 100)
+#     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE)
+
 class Course(models.Model):
-    Id = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=30)
-    code = models.CharField(max_length=8)
+    Name = models.CharField(max_length=50)
+    Code = models.CharField(max_length=8,primary_key=True,unique=True)
     CreditHour = models.IntegerField()
     Description = models.CharField(max_length = 100)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE)
@@ -64,13 +71,25 @@ class Routine(models.Model):
     Hour = models.IntegerField()
     RoomNo = models.IntegerField()
     BlockNo = models.IntegerField()
-    Course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    Course = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
 
 # Virtual classroom table
+# class Classroom(models.Model):
+#     Id = models.AutoField(primary_key=True)
+#     ClassroomCode = models.CharField(max_length=6,default=None)
+#     CourseName = models.CharField(max_length=50,default=None)
+#     FacultyId = models.ForeignKey(Faculty,to_field="Id",on_delete=models.CASCADE)
+#     CourseCode = models.CharField(max_length=8)
+#     Course = models.ForeignKey(Course,on_delete=models.CASCADE,default=None)
+#     InstructorName = models.CharField(max_length=30)
+#     StudentId = ArrayField(models.CharField(max_length=12,null=True,blank=True),default=list)
+
 class Classroom(models.Model):
     Id = models.AutoField(primary_key=True)
-    FacultyId = models.ForeignKey(Faculty,on_delete=models.CASCADE)
-    CourseCode = models.ForeignKey(Course,on_delete=models.CASCADE)
+    ClassroomCode = models.CharField(max_length=6,default=None)
+    CourseName = models.CharField(max_length=50,default=None)
+    FacultyId = models.ForeignKey(Faculty,to_field="Id",on_delete=models.CASCADE)
+    CourseCode = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
     InstructorName = models.CharField(max_length=30)
     StudentId = ArrayField(models.CharField(max_length=12,null=True,blank=True),default=list)
 
@@ -79,7 +98,7 @@ class Attendance(models.Model):
     Id = models.AutoField(primary_key=True)
     Date = models.DateField()
     Status = models.CharField(max_length=8)
-    CourseId = models.ForeignKey(Course,on_delete=models.CASCADE)
+    CourseCode = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
     FacultyId = models.ForeignKey(Faculty,to_field="Id",on_delete=models.CASCADE)
     StudentId = models.ForeignKey(Student,to_field="Id",on_delete=models.CASCADE)
 
@@ -102,7 +121,7 @@ class ClassroomConvo(models.Model):
 # to store the conversation of course ( like coursera )
 class CourseConvo(models.Model):
     Id = models.AutoField(primary_key=True)
-    Course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    Course = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
     Message = models.TextField()
     Sender = models.CharField(max_length=12)
     Like = models.IntegerField()
