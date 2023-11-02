@@ -134,10 +134,7 @@ def LoadClassrooms(request):
             return JsonResponse(response,safe=False,status=200)
     except Exception as e:
         return JsonResponse({'message':'not sucess'},status=500)
-        pass
 
-
-# fetch classroom for faculty
 # save pdfs(for assignments)
 
 
