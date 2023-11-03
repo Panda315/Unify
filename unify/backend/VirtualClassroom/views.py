@@ -1,17 +1,18 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile
 from django.http import JsonResponse
-from django.db.models import F
 import json,secrets,string
 
+
+# to generate random code for classroom
 def generate_random_code(length=6):
     characters = string.ascii_letters + string.digits  # Alphanumeric characters
     code = ''.join(secrets.choice(characters) for _ in range(length))
     return code
 
+# to check whether the code exists or not already
 def generate_unique_code():
     while True:
         code = generate_random_code()   
@@ -136,5 +137,24 @@ def LoadClassrooms(request):
         return JsonResponse({'message':'not sucess'},status=500)
 
 # save pdfs(for assignments)
+@csrf_exempt
+def UploadFile(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        file_path = data.get('file')
+
+        if file_path:
+            with open(file_path, 'rb') as file:
+                binary_data = file.read()
+
+            # creating a new instance and storing the binary data in the database
+            ClassroomCompressedFile.objects.create(uploaded_file=binary_data)
+            return JsonResponse({'message':'success'},status=200)
+        
+        else:
+            return JsonResponse({'message':'file not uploaded'},status=500)
+        
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+    
 
 

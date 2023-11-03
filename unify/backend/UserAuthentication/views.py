@@ -14,7 +14,6 @@ def login_view(request):
         password = data.get('password')
 
         user = authenticate(request,email=email,password=password)
-        print(user)
         if user is not None:
             login(request,user)
             token, _ = Token.objects.get_or_create(user=user)
@@ -25,7 +24,6 @@ def login_view(request):
             
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
-            pass
 
     return render(request,'../frontend/src/components/login.jsx')
         

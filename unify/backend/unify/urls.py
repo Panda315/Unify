@@ -35,5 +35,6 @@ urlpatterns = [
     path('createclassroom/',VirtualClassroom_views.CreateClassroom,name="createClassroom"),
     path('joinclassroom/',VirtualClassroom_views.JoinClassroom,name="joinClassroom"),
     path('deleteclassroom/',VirtualClassroom_views.DeleteClassroom,name="deleteClassroom"),
-    path('loadclassroom/',VirtualClassroom_views.LoadClassrooms,name='loadClassroom')
+    path('loadclassroom/',VirtualClassroom_views.LoadClassrooms,name='loadClassroom'),
+    path('uploadclassroomfile/',VirtualClassroom_views.UploadFile,name='uploadFile'),
 ]
