@@ -1,5 +1,4 @@
 from django.contrib.auth import login,authenticate,logout
-from django.contrib.auth.models import User
 from django.core import serializers
 from rest_framework.authtoken.models import Token
 from django.shortcuts import render,redirect
@@ -15,7 +14,6 @@ def login_view(request):
         password = data.get('password')
 
         user = authenticate(request,email=email,password=password)
-        print(user)
         if user is not None:
             login(request,user)
             token, _ = Token.objects.get_or_create(user=user)
@@ -26,7 +24,6 @@ def login_view(request):
             
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
-            pass
 
     return render(request,'../frontend/src/components/login.jsx')
         

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'AddData',
     'UserAuthentication',
     'events',
+    'VirtualClassroom'
 ]
 
 REST_FRAMEWORK = {
