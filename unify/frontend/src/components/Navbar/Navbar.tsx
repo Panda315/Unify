@@ -277,26 +277,30 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: 'Home',
-    href: '/student'
+    href: '/home'
   },
   {
     label: 'Events',
-    href: '/student/events',
+    href: '/events',
     children: [
       {
         label: 'View Events',
         subLabel: 'See the list of events',
-        href: '/student/events',
+        href: '/events',
       },
       {
         label: 'Create Event',
         subLabel: 'Create an event',
-        href: '/student/events/create',
+        href: '/events/create',
       },
     ],
   },
   {
     label: 'Classroom',
-    href: '/student/classroom'
+    href: '/classroom'
+  },
+  {
+    label : 'Routine',
+    href : '/routine'
   }
 ]

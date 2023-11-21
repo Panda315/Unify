@@ -44,13 +44,13 @@ function Login() {
         const data = await response.json()
         localStorage.setItem('token', data.token);
         localStorage.setItem('role',"student")
-        window.location.href = "/student"
+        window.location.href = "/home"
       }
       else if(response.status === 201){
         const data = await response.json()
         localStorage.setItem('token', data.token);
         localStorage.setItem('role',"faculty")
-        window.location.href = "/student/classroom"
+        window.location.href = "/classroom"
       }
       else {
         alert("Invalid Email or Password");

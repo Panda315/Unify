@@ -18,6 +18,12 @@ const isAuthenticated = () => {
   return !!userId;
 };
 
+const isA = () => {
+  const role = localStorage.getItem('role')
+  console.log(role)
+  return role;
+}
+
 export function App() {
   const currentUrl = window.location.pathname;
   return (
@@ -27,13 +33,16 @@ export function App() {
         <Routes>
           <Route exact path="/" Component={Login} />
           <Route exact path="/login" Component={Login} />
-          {isAuthenticated() && <Route exact path="/student" Component={Home} />}
-          {isAuthenticated() && <Route exact path="/student/events" Component={ViewEvents} />}
-          {isAuthenticated() && <Route exact path="/student/events/create" Component={CreateEvent} />}
-          {isAuthenticated() && <Route exact path="/student/routine" Component={StudentRoutine} />}
+          {isAuthenticated() && isA() === "student" && <Route exact path="/home" Component={Home} />}
+          {isAuthenticated() && isA() === "student" && <Route exact path="/events" Component={ViewEvents} />}
+          {isAuthenticated() && isA() === "student" && <Route exact path="/routine" Component={StudentRoutine} />}
+          {isAuthenticated() && isA() === "student" && <Route exact path='/classroom' element={<Classroom/>}/>}
 
-
-          {isAuthenticated() && <Route exact path='/student/classroom' element={<Classroom/>}/>}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/home" Component={Home} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/events" Component={ViewEvents} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/events/create" Component={TeacherHome} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={StudentRoutine} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
         </Routes>
       </BrowserRouter> 
     </ChakraProvider>
