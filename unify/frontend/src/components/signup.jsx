@@ -1,4 +1,5 @@
 import React,{useState} from 'react';
+import Cookies from 'js-cookie';
 import {
   Box,
   Button,
@@ -21,6 +22,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const csrfToken = Cookies.get('csrftoken')
+  console.log(csrfToken)
 
     const HandleSubmit = async (e) => {
       try{
@@ -28,12 +31,14 @@ function Login() {
         const response = await fetch('http://localhost:8000/login/',{
           method : "POST",
           headers :{
-            'Content-Type' : "application/json"
+            'Content-Type' : "application/json",
+            'X-CSRFToken' : csrfToken,
           },
           body : JSON.stringify({
             password  : password,
             email : email
-          })
+          }),
+          credentials : 'include',
         });
         
       console.log(

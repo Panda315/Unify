@@ -3,10 +3,11 @@ from django.core import serializers
 from rest_framework.authtoken.models import Token
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 import json
 
 @csrf_exempt
+# @csrf_protect
 def login_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)

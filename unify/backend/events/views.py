@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from main.models import User, Faculty
 from .models import Category, Event
 from .serializers import CategorySerializer, EventSerializer
 
@@ -30,17 +31,27 @@ def event_create(request):
         category = Category.objects.get(name=data.get('category'))
         coverImage = data.get('coverImage')
         description = data.get('description')
-        
-        try:
-            event = Event.objects.create(
-                title=title,
-                startDate=startDate,
-                endDate=endDate,
-                category=category,
-                coverImage=coverImage,
-                description=description
-            )
-            event.save()
-            return JsonResponse({'message': 'Event Creation Successful'}, status=200)
-        except Exception as e:
-            return JsonResponse({'Error': 'Event Creation Failed'}, status=500)
+        token = data.get('token')
+
+        # checking if the user is permitted or not
+        userId = Token.objects.get(key=token)
+        user = User.objects.get(id=userId.user_id)
+        instructor = Faculty.objects.get(Email=user.Email)
+
+        if instructor is not None:
+            try:
+                event = Event.objects.create(
+                    title=title,
+                    startDate=startDate,
+                    endDate=endDate,
+                    category=category,
+                    coverImage=coverImage,
+                    description=description
+                )
+                event.save()
+                return JsonResponse({'message': 'Event Creation Successful'}, status=200)
+            except Exception as e:
+                return JsonResponse({'Error': 'Event Creation Failed'}, status=500)
+            
+        else:
+            return JsonResponse({'Error' : 'Not permitted'},status=403)
