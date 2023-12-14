@@ -55,6 +55,7 @@ function ViewEvents() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalContent, setModalContent] = useState({ title: '', description: '', img: '' });
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
+  const [displayedEvents, setDisplayedEvents] = useState(2); // Show 2 events by default
 
   const openModal = (title, description, img, Category) => {
     setModalContent({ title, description, img , Category});
@@ -80,7 +81,10 @@ function ViewEvents() {
     newDate.setMonth(newDate.getMonth() + 1);
     setSelectedDate(newDate);
   }
-
+  const handleSeeMore = () => {
+    setDisplayedEvents(displayedEvents + 2); //display two more events when see more is clicked
+  };
+  
   const tileContent = ({ date, view }) => {
     if (view === 'month' && date.getDate() === new Date().getDate()) {
       return <div style={{ borderRadius: '50%', padding: '2px' }}></div>;
@@ -96,48 +100,61 @@ function ViewEvents() {
 
   return (
     <Box display="flex">
-      <Box placeContent="center" >
-        {sectionsData.map((section, index) => (
-          <SimpleGrid
-            key={index}
-            as="section"
-            my="2rem"
-            border="1px solid black"
-            borderRadius="1rem"
-            display="flex"
-            templateColumns="2fr 2fr"
-            ml={isLargerThan768 ? '10%' : '0%'}
-            mr={isLargerThan768 ? '10%' : '0%'}
+<Box as="section" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      {sectionsData.slice(0, displayedEvents).map((section, index) => (
+  <SimpleGrid
+    key={index}
+    as="section"
+    my="2rem"
+    border="1px solid black"
+    borderRadius="1rem"
+    display="flex"
+    templateColumns="2fr 2fr"
+    ml={isLargerThan768 ? '10%' : '0%'}
+    mr={isLargerThan768 ? '10%' : '0%'}
+  >
+    <Image
+      src={section.img}
+      alt=""
+      borderRadius="xl"
+      my="2rem"
+      height="10rem"
+      width="10rem"
+      ml="1rem"
+    />
+    <Box p="4" display="flexbox">
+      <Heading size="lg" my="4">
+        {section.title}
+      </Heading>
+      <Text my="4" display="flexbox">
+        {section.description}
+      </Text>
+      <SimpleGrid my="6" placeItems="center">
+        <Button
+          colorScheme="blue"
+          size="4rem"
+          p="2"
+          mr="10rem"
+          onClick={() =>
+            openModal(section.title, section.description, section.img, section.Category)
+          }
+        >
+          Learn more
+        </Button>
+      </SimpleGrid>
+    </Box>
+  </SimpleGrid>
+))}
+  
+  {sectionsData.length > displayedEvents && (
+  <>
+     <Button mt="2" colorScheme="blue" onClick={handleSeeMore}>
+      See more
+    </Button>
+  </>
+)}
 
-          >
-            <Image
-              src={section.img}
-              alt=""
-              borderRadius="xl"
-              my="2rem"
-              height="10rem"
-              width="10rem"
-              ml="1rem"
-            />
-            <Box p="4" display="flexbox">
-              <Heading size="lg" my="4">
-                {section.title}
-              </Heading>
-              <Text my="4" display="flexbox">{section.description}</Text>
-              <SimpleGrid my="6" placeItems="center">
-                <Button
-                  colorScheme="blue"
-                  size="4rem"
-                  p="2"
-                  mr="10rem"
-                  onClick={() => openModal(section.title, section.description, section.img, section.Category)}
-                >
-                  Learn more
-                </Button>
-              </SimpleGrid>
-            </Box>
-          </SimpleGrid>
-        ))}
+    
 
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <ModalOverlay />
