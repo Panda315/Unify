@@ -19,27 +19,43 @@ const TeacherHome = () => {
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
-      {!showCreateEvent ? (
-        <div style={{ textAlign: "center" }}>
-          <button
-            onClick={handleAddEventsClick}
-            style={{
-              marginLeft: "30rem",
-              backgroundColor: "green",
-              color: "white",
-              borderRadius: "10px",
-              width: "110px",
-              height: "40px",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Add Events{" "}
-            {/* <FontAwesomeIcon icon={faPlus} style={{ marginLeft: '10px' }} /> */}
+        {!showCreateEvent ? (
+          <div style={{ textAlign: "center" , }}>
+         <div
+  style={{
+    marginTop: "0.5rem",
+    marginBottom: "-1.15rem", // Adjust the negative margin to align properly
+    marginLeft: "1rem",
+    backgroundColor: "green",
+    color: "white",
+    borderRadius: "50%",
+    width: "3rem",
+    height: "2.5rem",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <button
+    onClick={handleAddEventsClick}
+    style={{
+      backgroundColor: "transparent",
+      border: "none",
+      width: "100%",
+      height: "100%",
+      padding: 0,
+      margin: 0,
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+            {/* Add Events */}
+            <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "1px" }} />
           </button>
+          </div>
           <ViewEvents />
         </div>
       ) : (
