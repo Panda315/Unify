@@ -28,7 +28,8 @@ export function App() {
   const currentUrl = window.location.pathname;
   return (
     <ChakraProvider>
-      {currentUrl !== '/login' && <NavBar />}
+      <StudentRoutine/>
+      {/* {currentUrl !== '/login' && <NavBar />}
       <BrowserRouter>
         <Routes>
           <Route exact path="/" Component={Login} />
@@ -44,7 +45,7 @@ export function App() {
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
         </Routes>
-      </BrowserRouter> 
+      </BrowserRouter>  */}
     </ChakraProvider>
   )
 }

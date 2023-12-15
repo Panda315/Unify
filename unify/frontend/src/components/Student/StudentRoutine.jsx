@@ -30,7 +30,12 @@ const daysOfWeek = [
 const hours = Array.from({ length: 9 }, (_, i) => 7 + i);
 
 const StudentRoutine = () => {
-  const [subjects, setSubjects] = useState({});
+  const [subjects, setSubjects] = useState({
+    "Monday-9": "Math",
+    "Monday-8": "Math",
+
+    "Monday-10": "Physics",
+  });
   const [newEntry, setNewEntry] = useState({ day: "", time: "", subject: "" });
   const [selectedCell, setSelectedCell] = useState(null);
 
@@ -46,30 +51,31 @@ const StudentRoutine = () => {
       const [day, hour] = subjectKey.split("-");
       const currentSubject = subjects[subjectKey];
       let span = 1;
-
-      // Check if the next hour in the same day contain the same subject
+  
+      // Check if the next hour in the same day contains the same subject
       for (let i = parseInt(hour) + 1; i <= 15; i++) {
         const nextKey = `${day}-${i}`;
         if (subjects[nextKey] === currentSubject) {
           span++;
-          delete subjects[nextKey]; // Prevent rendering of the merged cells
         } else {
           break;
         }
       }
-
+  
       return span;
     }
-
+  
     return 1; // Default value
   };
+  
+  
 
-  const handleNewEntryChange = (e) => {
+  const handleNewEntry = (e) => {
     const { name, value } = e.target;
-    setNewEntry({
-      ...newEntry,
+    setNewEntry((prevEntry) => ({
+      ...prevEntry,
       [name]: value,
-    });
+    }));
   };
 
   const addNewEntry = () => {
@@ -126,9 +132,8 @@ const StudentRoutine = () => {
                     key={`${day}-${hour}`}
                     colSpan={colSpan}
                     style={{
-                      
                       ...cellStyle,
-                      maxWidth: colSpan === 1 ? 'none' : `${colSpan * 80}%`,
+                      maxWidth: colSpan === 2 ? "2" : `${colSpan * 10}%`,
                     }}
                     onContextMenu={(e) => {
                       e.preventDefault();
@@ -159,21 +164,21 @@ const StudentRoutine = () => {
           type="text"
           name="day"
           placeholder="Day (e.g., Monday)"
-          onChange={handleNewEntryChange}
+          onChange={handleNewEntry}
           value={newEntry.day}
         />
         <Input
           type="text"
           name="time"
           placeholder="Time (e.g., 9-10)"
-          onChange={handleNewEntryChange}
+          onChange={handleNewEntry}
           value={newEntry.time}
         />
         <Input
           type="text"
           name="subject"
           placeholder="Subject"
-          onChange={handleNewEntryChange}
+          onChange={handleNewEntry}
           value={newEntry.subject}
         />
         <Button onClick={addNewEntry}>Add Entry</Button>
