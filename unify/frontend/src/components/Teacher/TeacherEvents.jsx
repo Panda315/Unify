@@ -24,7 +24,7 @@ const TeacherHome = () => {
          <div
   style={{
     marginTop: "0.5rem",
-    marginBottom: "-1.15rem", // Adjust the negative margin to align properly
+    marginBottom: "-1.15rem", 
     marginLeft: "1rem",
     backgroundColor: "green",
     color: "white",
