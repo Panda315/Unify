@@ -8,6 +8,7 @@ import CreateEvent from './components/Events/CreateEvent'
 import Login from './components/signup'
 import { ChakraProvider } from '@chakra-ui/react'
 import Classroom from './components/Classroom/Classroom';
+import UserProfile from './components/Profile/UserProfile';
 import TeacherHome from './components/Teacher/TeacherEvents';
 import StudentRoutine from './components/Student/StudentRoutine';
 // Create a function to check if the user is authenticated
