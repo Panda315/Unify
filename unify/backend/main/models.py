@@ -75,7 +75,7 @@ class Routine(models.Model):
     StartTime = models.IntegerField()
     EndTime = models.IntegerField()
     Hour = models.IntegerField()
-    RoomNo = models.IntegerField()
+    RoomNo = models.IntegerField(null=True,blank=True)
     BlockNo = models.IntegerField()
     Course = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
 

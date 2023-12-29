@@ -19,6 +19,7 @@ from django.urls import path,include
 from AddData import views as AddData_views
 from UserAuthentication import views as UserAuthentication_views
 from VirtualClassroom import views as VirtualClassroom_views
+from Routine import views as Routine_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,4 +38,9 @@ urlpatterns = [
     path('deleteclassroom/',VirtualClassroom_views.DeleteClassroom,name="deleteClassroom"),
     path('loadclassroom/',VirtualClassroom_views.LoadClassrooms,name='loadClassroom'),
     path('uploadclassroomfile/',VirtualClassroom_views.UploadFile,name='uploadFile'),
+    path('addProgram/',AddData_views.AddProgram,name='addProgram'),
+    path('saveRoutine/',Routine_views.SaveRoutine,name="saveroutine"),
+    path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
+    path('routineGenerator/',Routine_views.RoutineGenerator,name="routinegenerator"),
+    path('addBuilding/',AddData_views.addBuilding,name='addbuilding')
 ]

@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,check_password
 from django.core import serializers
 from django.http import JsonResponse
-from main.models import Student, Faculty, Event, School,Department, Course
+from main.models import Student, Faculty, Event, School,Department, Course, Program, Building
 import json
 
 # Create your views here.
@@ -59,7 +59,6 @@ def Events(request):
 @csrf_exempt
 def AddStudent(request):
     if request.method == 'POST':
-        print("Hello World !!!!!")
         data = json.loads(request.body)
         id = data.get('id')
         firstname = data.get('firstname')
@@ -68,11 +67,13 @@ def AddStudent(request):
         email = data.get('email')
         password = make_password(data.get('password'))
         dept_id = data.get('dept')
+        batch = data.get('batch')
+        program = data.get('program')
 
     try:
         dept_instance = Department.objects.get(Code=dept_id)
-        print(dept_instance)
-        Student.objects.create(Id=id,FirstName=firstname,LastName=lastname,Dob=dob,Email=email,Password=password,DeptCode=dept_instance)
+        program = Program.objects.get(Code__iexact=program)
+        Student.objects.create(Id=id,FirstName=firstname,LastName=lastname,Dob=dob,Email=email,Password=password,DeptCode=dept_instance,Batch=batch,ProgramCode=program)
         return JsonResponse({'message':'sucessful'},status=200)
     except Exception as e:
         print(e)
@@ -125,3 +126,34 @@ def AddCourse(request):
         return JsonResponse({'message':'sucessful'},status=200)
     except:
         return JsonResponse({'message':'Error'},status=500)
+    
+
+# save program
+@csrf_exempt
+def AddProgram(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        code = data.get('code')
+        capacity = data.get('capacity')
+        name = data.get('name')
+        dept_code = data.get('dept_code')
+        schoolcode = data.get('school_code')
+
+    try:
+        schoolcode = School.objects.get(Code=schoolcode)
+        dept_code = Department.objects.get(Code=dept_code)
+        Program.objects.create(Code=code,Name=name,Capacity=capacity,DeptCode=dept_code,SchoolCode=schoolcode)
+        return JsonResponse({'message':'sucessful'},status=200)
+    except:
+        return JsonResponse({'message':'Error'},status=500)
+    
+
+@csrf_exempt
+def addBuilding(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        block_code = data.get('block_code')
+        room = data.get('room')
+        block_code = Department.objects.get(Code=block_code)
+        Building.objects.create(DeptCode=block_code,Room=room)
+        return JsonResponse({'message':'ok'},status=200)
