@@ -11,6 +11,7 @@ import Classroom from './components/Classroom/Classroom';
 import UserProfile from './components/Profile/UserProfile';
 import TeacherHome from './components/Teacher/TeacherEvents';
 import StudentRoutine from './components/Student/StudentRoutine';
+import OpenSchool from './components/OpenSchool/OpenSchool';
 // Create a function to check if the user is authenticated
 const isAuthenticated = () => {
   const userId = localStorage.getItem('token');
@@ -38,12 +39,14 @@ export function App() {
           {isAuthenticated() && isA() === "student" && <Route exact path="/events" Component={ViewEvents} />}
           {isAuthenticated() && isA() === "student" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "student" && <Route exact path='/classroom' element={<Classroom/>}/>}
+          {isAuthenticated() && isA() === "student" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
 
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/home" Component={Home} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/events" Component={ViewEvents} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/events/create" Component={TeacherHome} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
         </Routes>
       </BrowserRouter> 
     </ChakraProvider>

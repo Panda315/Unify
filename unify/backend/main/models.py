@@ -157,4 +157,4 @@ class CourseContent(models.Model):
     Coursecode = models.CharField(max_length=8)
     CourseBy = models.CharField(max_length=30)      # name of the educator
     Description = models.TextField()
-    Like = models.IntegerField()
+    Like = models.IntegerField()    

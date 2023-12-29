@@ -302,5 +302,9 @@ const NAV_ITEMS: Array<NavItem> = [
   {
     label : 'Routine',
     href : '/routine'
+  },
+  {
+    label : 'Openschool',
+    href : '/openschool'
   }
 ]
