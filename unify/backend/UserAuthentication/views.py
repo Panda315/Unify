@@ -18,10 +18,10 @@ def login_view(request):
         if user is not None:
             login(request,user)
             token, _ = Token.objects.get_or_create(user=user)
-            if user.profile.is_student:
-                return JsonResponse({"token": str(token)}, status=200)
-            elif user.profile.is_faculty:
-                return JsonResponse({"token": str(token)},status=201)
+            # if user.profile.is_student:
+            return JsonResponse({"token": str(token)}, status= 200 if(user.profile.is_student) else 201)
+            # elif user.profile.is_faculty:
+            #     return JsonResponse({"token": str(token)},status=201)
             
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
@@ -33,3 +33,5 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return JsonResponse({"message" : "Logged Out"},status=200)
+
+

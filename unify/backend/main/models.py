@@ -33,6 +33,14 @@ class Course(models.Model):
     Description = models.CharField(max_length = 100)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE)
 
+class Program(models.Model):
+    Id = models.AutoField(primary_key=True)
+    DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
+    SchoolCode = models.ForeignKey(School,to_field="Code",on_delete=models.CASCADE,default=None)
+    Name = models.CharField(max_length=80)
+    Code = models.CharField(max_length=8,unique=True)
+    Capacity = models.IntegerField()
+
 # Student table
 class Student(models.Model):
     Id = models.CharField(max_length=12,primary_key=True)
@@ -43,6 +51,8 @@ class Student(models.Model):
     Password = models.CharField(max_length=200)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE)
     ClassroomId = ArrayField(models.IntegerField(null=True,blank=True),default=list)
+    Batch = models.IntegerField(default=None)
+    ProgramCode = models.ForeignKey(Program,to_field="Code",on_delete=models.CASCADE,default=None)
 
 # Faculty table
 class Faculty(models.Model):
@@ -59,7 +69,7 @@ class Faculty(models.Model):
 class Routine(models.Model):
     Id = models.AutoField(primary_key=True)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
-    ProgramId = models.IntegerField()
+    Program = models.ForeignKey(Program,to_field="Code",on_delete=models.CASCADE,default=None)
     Batch = models.IntegerField()
     WeekDay = models.CharField(max_length=10)
     StartTime = models.IntegerField()
@@ -86,14 +96,6 @@ class Attendance(models.Model):
     CourseCode = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
     FacultyId = models.ForeignKey(Faculty,to_field="Id",on_delete=models.CASCADE)
     StudentId = models.ForeignKey(Student,to_field="Id",on_delete=models.CASCADE)
-
-class Program(models.Model):
-    Id = models.AutoField(primary_key=True)
-    DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
-    SchoolCode = models.ForeignKey(School,to_field="Code",on_delete=models.CASCADE,default=None)
-    Name = models.CharField(max_length=80)
-    Code = models.CharField(max_length=8)
-    Capacity = models.IntegerField()
 
 # to store the conversation of classroom ( like google classroom )
 class ClassroomConvo(models.Model):

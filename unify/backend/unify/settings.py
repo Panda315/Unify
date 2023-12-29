@@ -46,10 +46,14 @@ INSTALLED_APPS = [
     'AddData',
     'UserAuthentication',
     'events',
-    'VirtualClassroom'
+    'VirtualClassroom',
+    'Routine'
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERSMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     )
