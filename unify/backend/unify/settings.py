@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'UserAuthentication',
     'events',
     'VirtualClassroom',
-    'Routine'
+    'Routine',
+    'OpenSchool'
 ]
 
 REST_FRAMEWORK = {

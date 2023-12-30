@@ -53,6 +53,7 @@ class Student(models.Model):
     ClassroomId = ArrayField(models.IntegerField(null=True,blank=True),default=list)
     Batch = models.IntegerField(default=None)
     ProgramCode = models.ForeignKey(Program,to_field="Code",on_delete=models.CASCADE,default=None)
+    CourseId = ArrayField(models.IntegerField(null=True,blank=True),default=list)  # to store the ids of courses enrolled in open school
 
 # Faculty table
 class Faculty(models.Model):
@@ -64,6 +65,7 @@ class Faculty(models.Model):
     Password = models.CharField(max_length=200)
     DeptCode = models.ForeignKey(Department,to_field="Code",on_delete=models.CASCADE,default=None)
     ClassroomId = ArrayField(models.IntegerField(null=True,blank=True),default=list)
+    CourseId = ArrayField(models.IntegerField(null=True,blank=True),default=list)  # to store the ids of courses enrolled in open school
 
 # Routine table
 class Routine(models.Model):
@@ -161,3 +163,5 @@ class CourseContent(models.Model):
     CourseBy = models.CharField(max_length=30)      # name of the educator
     Description = models.TextField()
     Like = models.IntegerField()    
+    CoverImage = models.ImageField(default=None)
+    Enrolled = models.IntegerField(default=None)    # to store the number of users enrolled in the course

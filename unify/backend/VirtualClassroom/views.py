@@ -140,8 +140,11 @@ def LoadClassrooms(request):
 @csrf_exempt
 def UploadFile(request):
     if request.method == 'POST':
+        print(request.body.formData)
         data = json.loads(request.body)
         file_path = data.get('file')
+        # file_path = file_path
+        print(file_path)
 
         if file_path:
             with open(file_path, 'rb') as file:
