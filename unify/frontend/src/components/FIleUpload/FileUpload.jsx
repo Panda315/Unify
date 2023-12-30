@@ -12,13 +12,19 @@ const FileUpload = () => {
 
   const handleUpload = async () => {
     if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+      // const formData = new FormData();
+      // formData.append('file', selectedFile);
+      let file = selectedFile
 
       try {
-        const response = await fetch('http://localhost:5000/upload', {
-          method: 'POST',
-          body: formData,
+        const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
+          method : 'POST',
+          headers : {
+            'Content-Type' : 'application/json'
+          },
+          body: JSON.stringify({
+            file : file.name
+          }),
         });
 
         if (response.ok) {
