@@ -20,6 +20,7 @@ from AddData import views as AddData_views
 from UserAuthentication import views as UserAuthentication_views
 from VirtualClassroom import views as VirtualClassroom_views
 from Routine import views as Routine_views
+from OpenSchool import views as OpenSchool_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,5 +44,6 @@ urlpatterns = [
     path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
     path('routineGenerator/',Routine_views.RoutineGenerator,name="routinegenerator"),
     path('addBuilding/',AddData_views.addBuilding,name='addbuilding'),
-    path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom')
+    path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom'),
+    path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses')
 ]
