@@ -10,12 +10,12 @@ function getRandomColor() {
 
 
 
-function ClassroomCard({ id, title, courseCode, profileImage, instructor }) {
+function ClassroomCard({id, title, courseCode, profileImage, instructor }) {
   const upperBackgroundColor = getRandomColor();
  
 
   return (
-    <Link to = {`/classroom/${id}`}>
+    <Link to={`/classroom/${id}?title=${encodeURIComponent(title)}&courseCode=${encodeURIComponent(courseCode)}&instructor=${encodeURIComponent(instructor)}`}>
     <Box
       bg="white"
       p={6}
@@ -60,3 +60,13 @@ function ClassroomCard({ id, title, courseCode, profileImage, instructor }) {
 }
 
 export default ClassroomCard;
+
+
+
+
+
+
+
+
+
+

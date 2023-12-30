@@ -4,6 +4,7 @@ import FileUpload from '../FIleUpload/FileUpload';
 import CreateClassroom from './CreateClassroom';
 import DeleteClassroom from './DeleteClassroom';
 import JoinClassroom from './JoinClassroom';
+import LeaveClassroom from './LeaveClassroom';
 
 function Classroom() {
     const [classrooms, setClassrooms] = useState([]);
@@ -89,6 +90,7 @@ function Classroom() {
             {userRole === 'student' && (
                 <>
                     <JoinClassroom/>
+                    <LeaveClassroom />
                 </>
             )}
         </div>
