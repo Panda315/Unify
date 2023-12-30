@@ -42,7 +42,7 @@ def CreateClassroom(request):
                                 ClassroomCode=code)
         instructor.ClassroomId.append(classroom.Id)
         instructor.save()
-        return JsonResponse({"message" : "success"},status=200)
+        return JsonResponse({"message" : "success","joiningCode":code},status=200)
     except Exception as e:
         print(e)
         return JsonResponse({"message" : "not success"},status=500)
@@ -73,7 +73,7 @@ def JoinClassroom(request):
                 return JsonResponse({'message':"Sucess"},status=200)
         except Exception as e:
             print(e)
-            return JsonResponse({'message':"Can not delete classroom"},status=500)
+            return JsonResponse({'message':"Can not join classroom"},status=500)
 
 # to delete classroom
 @csrf_exempt
