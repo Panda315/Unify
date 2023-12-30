@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Avatar } from '@chakra-ui/react';
-
+import { Link } from 'react-router-dom';
 // Function to generate a random background color
 function getRandomColor() {
   const colors = ['#FF5733', '#33FF9F', '#337DFF', '#FF3389'];
@@ -8,10 +8,14 @@ function getRandomColor() {
   return randomColor;
 }
 
-function ClassroomCard({ title, courseCode, profileImage, instructor }) {
+
+
+function ClassroomCard({ id, title, courseCode, profileImage, instructor }) {
   const upperBackgroundColor = getRandomColor();
+ 
 
   return (
+    <Link to = {`/classroom/${id}`}>
     <Box
       bg="white"
       p={6}
@@ -19,7 +23,7 @@ function ClassroomCard({ title, courseCode, profileImage, instructor }) {
       boxShadow="xl"
       borderWidth="2px"
       borderColor="gray.200"
-      w="100%"
+      w="400px"
       position="relative"
       h="250px"
       transition="transform 0.2s"
@@ -50,6 +54,8 @@ function ClassroomCard({ title, courseCode, profileImage, instructor }) {
       <hr style={{ borderTop: '3px solid #e2e8f0', width: '100%', marginTop: '10px' }} />
       </Text>
     </Box>
+    </Link>
+  
   );
 }
 
