@@ -37,9 +37,9 @@ def event_create(request):
         userId = Token.objects.get(key=token)
         user = User.objects.get(id=userId.user_id)
         instructor = Faculty.objects.get(Email=user.Email)
-        eligible = Administrator.objects.filter(Faculty_id=instructor.Id)
+        administrator = Administrator.objects.filter(Faculty_id=instructor.Id)
 
-        if eligible is not None:
+        if administrator is not None:
             try:
                 event = Event.objects.create(
                     title=title,
