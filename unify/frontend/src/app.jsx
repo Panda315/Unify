@@ -11,6 +11,7 @@ import Classroom from './components/Classroom/Classroom';
 import UserProfile from './components/Profile/UserProfile';
 import TeacherHome from './components/Teacher/TeacherEvents';
 import StudentRoutine from './components/Student/StudentRoutine';
+import StudentComment from './components/Student/Comment';
 import OpenSchool from './components/OpenSchool/OpenSchool';
 // Create a function to check if the user is authenticated
 const isAuthenticated = () => {
@@ -39,6 +40,7 @@ export function App() {
           {isAuthenticated() && isA() === "student" && <Route exact path="/events" Component={ViewEvents} />}
           {isAuthenticated() && isA() === "student" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "student" && <Route exact path='/classroom' element={<Classroom/>}/>}
+
           {isAuthenticated() && isA() === "student" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
 
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/home" Component={Home} />}
