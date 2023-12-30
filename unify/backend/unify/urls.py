@@ -42,5 +42,6 @@ urlpatterns = [
     path('saveRoutine/',Routine_views.SaveRoutine,name="saveroutine"),
     path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
     path('routineGenerator/',Routine_views.RoutineGenerator,name="routinegenerator"),
-    path('addBuilding/',AddData_views.addBuilding,name='addbuilding')
+    path('addBuilding/',AddData_views.addBuilding,name='addbuilding'),
+    path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom')
 ]

@@ -151,6 +151,7 @@ class ClassroomContent(models.Model):
     ObjectKey = models.CharField(max_length=200)        # to store the link of videos stored in another db
     ClassroomId = models.ForeignKey(Classroom,on_delete=models.CASCADE)
     Sender = models.CharField(max_length=12)
+    Head = models.IntegerField(default=None)    # yo bata head pdf sanga link hanne, assignment submission ma kun assignment bhitra ko ho dekhauna help garcha
 
 # to store the content of courses uploaded in open school
 class CourseContent(models.Model):

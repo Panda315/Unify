@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent
 from django.http import JsonResponse
 import json,secrets,string
 
@@ -158,4 +158,33 @@ def UploadFile(request):
     
 
 # load assignment
-# 
+# leave classroom
+@csrf_exempt
+def LeaveClassroom(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        token = data['token']
+        classroom_id = data["classroom_id"]
+
+    try:
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id=token.user_id)
+        student = Student.objects.get(Email=user.email)
+
+        if student is not None:
+            # removing from student from the classroom
+            classroom = Classroom.objects.get(Id=classroom_id)
+            classroom.StudentId.remove(student.Id)
+            classroom.save()
+
+            # removing the classroom from classroom array
+            student.ClassroomId.remove(classroom_id)
+            student.save()
+
+            # removing the contents having the student in that particular class
+            classroom_content = ClassroomContent.objects.filter(ClassroomId=classroom_id,Sender=student.Id)
+            classroom_content.delete()
+
+            return JsonResponse({'message':'Sucess'},status=200)
+    except:
+        return JsonResponse({'message':'Error'},status=500)
