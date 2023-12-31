@@ -150,13 +150,13 @@ class Room(models.Model):
 # to store the content of virtual classroom
 class ClassroomContent(models.Model):
     Id = models.AutoField(primary_key=True)
-    ObjectKey = ArrayField(models.IntegerField(blank=True),default=list)        # to store the link of videos stored in another model
+    ObjectKey = ArrayField(models.IntegerField(blank=True,null=True),default=list)        # to store the link of videos stored in another model
     ClassroomId = models.ForeignKey(Classroom,on_delete=models.CASCADE)
     Sender = models.CharField(max_length=12)
     IsHead = models.BooleanField(default=False)  # to check if the content is the front content ( like assignment question )
     Head = models.IntegerField(default=None)    # yo bata head pdf sanga link hanne, assignment submission ma kun assignment bhitra ko ho dekhauna help garcha
-    Description = models.TextField(default=None,null=True)
-    UploadedFiles = ArrayField(models.IntegerField(blank=True),default=list)       # to store the object key of the submitted assignments
+    Description = models.CharField(default=None,null=True,max_length=200)
+    UploadedFiles = ArrayField(models.IntegerField(blank=True,null=True),default=list)       # to store the object key of the submitted assignments
 
 # to store the content of courses uploaded in open school
 class CourseContent(models.Model):

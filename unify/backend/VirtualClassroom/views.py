@@ -141,19 +141,18 @@ def LoadClassrooms(request):
 @csrf_exempt
 def UploadFile(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        token = data.get('token')
-        classroom_id = data.get('classroom_id')
-        description = data.get('description')
-        isHead = data.get('is_head')    # frontend bata sir le assignment question/ notice submission ho bhane true bhanera pathaunu, esko lagi frontend ma add notice bhanera halne ani tyo notice ko beklai upload function banaune
-        role = data.get('role')
-        head = data.get('head')         # principle notice ko classroom_content ko id
+        token = request.POST.get('token')
+        classroom_id = request.POST.get('classroom_id')
+        description = request.POST.get('description')
+        isHead = request.POST.get('is_head') == "true"   # frontend bata sir le assignment question/ notice submission ho bhane true bhanera pathaunu, esko lagi frontend ma add notice bhanera halne ani tyo notice ko beklai upload function banaune
+        role = request.POST.get("role")
+        head = request.POST.get('head')         # principle notice ko classroom_content ko id
         file = request.FILES.get('file')
-        
         
     try:
         token = Token.objects.get(key=token)
         user = User.objects.get(id=token.user_id)
+
         binary_data = file.read()
         # creating a new instance and storing the binary data in the database
         id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data).id
@@ -164,23 +163,49 @@ def UploadFile(request):
                 has_previous_submission = ClassroomContent.objects.get(Sender=student.Id,Head=head)
                 has_previous_submission.ObjectKey.append(id)
                 has_previous_submission.save()
+
+                classroom_content = ClassroomContent.objects.get(Id=head)
+                classroom_content.UploadedFiles.append(id)
+                classroom_content.save()
+                JsonResponse({'message':'success'},status=200)
+
             except:
-                ClassroomContent.objects.create(objectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,head=head,Description=description)
+                classroom_id = Classroom.objects.get(Id=classroom_id)
+                ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                classroom_content = ClassroomContent.objects.get(Id=head)
+                classroom_content.UploadedFiles.append(id)
+                classroom_content.save()
                 return JsonResponse({'message':'success'},status=200)
+            
         else:
             faculty = Faculty.objects.get(Email=user.email)
             if isHead:
-                clasroom_content = ClassroomContent.objects.create(objectKey=[id],ClassroomId=classroom_id,Sender=faculty.Id,IsHead=True,Description=description)
-                clasroom_content.update(head=clasroom_content.Id)
+                classroom_id = Classroom.objects.get(Id=classroom_id)
+                classroom_content = ClassroomContent.objects.create(
+                    ObjectKey=[id],
+                    ClassroomId=classroom_id,
+                    Sender=faculty.Id,
+                    IsHead=True,
+                    Head=0,
+                    Description=description
+                )
+
+                classroom_content.Head = classroom_content.Id
+                classroom_content.save()
+
             else:
                 # send isHead false if question post garda if first pdf bahek aru pdf edit garera haldai cha bhane
                 try:
-                    has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=isHead)
+                    print("eta che ayo")
+                    has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=True)
+                    print(has_previous_submission.Id)
                     has_previous_submission.ObjectKey.append(id)
+                    has_previous_submission.save()
                     return JsonResponse({'message':'success'},status=200) 
                 except:
                     return JsonResponse({'message':'error from faculty.isHead else block'},status=500)
             return JsonResponse({'message':'success'},status=200)
+            
     except:
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
     

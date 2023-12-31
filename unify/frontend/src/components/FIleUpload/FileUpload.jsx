@@ -48,11 +48,20 @@ const FileUpload = () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('file', selectedFile);
-  
+      formData.append("token" ,"fa6a328f9ecad376e08d288f56e86889b1791bee")
+      formData.append("classroom_id", 3)
+      formData.append("description","This is second part of the assignment")
+      formData.append("is_head", false)
+      formData.append("role","faculty")
+      formData.append("head",1)
+      console.log(formData.get('role'))
       try {
         const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
           method: 'POST',
-          body: formData,
+          // headers: {
+          //   'Content-Type': 'multipart/form-data',
+          // },          
+          body: formData
         });
   
         if (response.ok) {
