@@ -45,5 +45,6 @@ urlpatterns = [
     path('routineGenerator/',Routine_views.RoutineGenerator,name="routinegenerator"),
     path('addBuilding/',AddData_views.addBuilding,name='addbuilding'),
     path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom'),
-    path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses')
+    path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses'),
+    path('downloadfile/',VirtualClassroom_views.DownloadCompressedFile,name='downloadfile')
 ]

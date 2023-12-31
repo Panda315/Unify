@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 import json,secrets,string
 
 
@@ -136,31 +136,79 @@ def LoadClassrooms(request):
     except Exception as e:
         return JsonResponse({'message':'not sucess'},status=500)
 
+# to remove the content
 # save pdfs(for assignments)
 @csrf_exempt
 def UploadFile(request):
     if request.method == 'POST':
-        print(request.body.formData)
         data = json.loads(request.body)
-        file_path = data.get('file')
-        # file_path = file_path
-        print(file_path)
-
-        if file_path:
-            with open(file_path, 'rb') as file:
-                binary_data = file.read()
-
-            # creating a new instance and storing the binary data in the database
-            ClassroomCompressedFile.objects.create(uploaded_file=binary_data)
-            return JsonResponse({'message':'success'},status=200)
+        token = data.get('token')
+        classroom_id = data.get('classroom_id')
+        description = data.get('description')
+        isHead = data.get('is_head')    # frontend bata sir le assignment question/ notice submission ho bhane true bhanera pathaunu, esko lagi frontend ma add notice bhanera halne ani tyo notice ko beklai upload function banaune
+        role = data.get('role')
+        head = data.get('head')         # principle notice ko classroom_content ko id
+        file = request.FILES.get('file')
         
+        
+    try:
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id=token.user_id)
+        binary_data = file.read()
+        # creating a new instance and storing the binary data in the database
+        id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data).id
+
+        if role == "student":
+            student = Student.objects.get(Email=user.email)
+            try:
+                has_previous_submission = ClassroomContent.objects.get(Sender=student.Id,Head=head)
+                has_previous_submission.ObjectKey.append(id)
+                has_previous_submission.save()
+            except:
+                ClassroomContent.objects.create(objectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,head=head,Description=description)
+                return JsonResponse({'message':'success'},status=200)
         else:
-            return JsonResponse({'message':'file not uploaded'},status=500)
-        
-    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+            faculty = Faculty.objects.get(Email=user.email)
+            if isHead:
+                clasroom_content = ClassroomContent.objects.create(objectKey=[id],ClassroomId=classroom_id,Sender=faculty.Id,IsHead=True,Description=description)
+                clasroom_content.update(head=clasroom_content.Id)
+            else:
+                # send isHead false if question post garda if first pdf bahek aru pdf edit garera haldai cha bhane
+                try:
+                    has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=isHead)
+                    has_previous_submission.ObjectKey.append(id)
+                    return JsonResponse({'message':'success'},status=200) 
+                except:
+                    return JsonResponse({'message':'error from faculty.isHead else block'},status=500)
+            return JsonResponse({'message':'success'},status=200)
+    except:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
     
 
 # load assignment
+@csrf_exempt
+def DownloadCompressedFile(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        id = data.get('id')
+        token = data.get('token')
+        token = Token.objects.get(key=token)
+
+    try:
+        if token is not None:
+            compressed_file = ClassroomCompressedFile.objects.get(id=id)
+            # Set appropriate response headers for file download
+            response = HttpResponse(compressed_file.uploaded_file, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{compressed_file.id}.pdf"'
+            return response
+    except:
+        return JsonResponse({'message':'error'},status=500)
+
+    
+
+    
+
+
 # leave classroom
 @csrf_exempt
 def LeaveClassroom(request):
