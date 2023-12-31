@@ -46,7 +46,8 @@ export function App() {
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/events/create" Component={TeacherHome} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
-          {isAuthenticated() && isA() === "faculty" && <Route exact path="/classroom/:id" Component={SingleClassroom}/>}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/classroom/:Id" Component={SingleClassroom}/>}
+      
 
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
         </Routes>

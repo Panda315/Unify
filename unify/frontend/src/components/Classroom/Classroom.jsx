@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ClassroomCard from './ClassroomCard'; // Assuming the path to your ClassroomCard component
 import FileUpload from '../FIleUpload/FileUpload';
 import CreateClassroom from './CreateClassroom';
-import DeleteClassroom from './DeleteClassroom';
 import JoinClassroom from './JoinClassroom';
-import LeaveClassroom from './LeaveClassroom';
 
 function Classroom() {
     const [classrooms, setClassrooms] = useState([]);
@@ -62,7 +60,6 @@ function Classroom() {
         }
     }, [userRole]);
 
-    console.log(classrooms)
 
     return (
         <div>
@@ -70,7 +67,7 @@ function Classroom() {
                 {classrooms.map((classroom) => (
                     <ClassroomCard
                         key={classroom.Id}
-                        id={classroom.Id}
+                        Id={classroom.Id}
                         title={classroom.CourseName}
                         courseCode={classroom.CourseCode}
                         instructor={classroom.InstructorName}
@@ -83,14 +80,12 @@ function Classroom() {
             {userRole === 'faculty' && (
                 <>
                     <CreateClassroom />
-                    <DeleteClassroom />
                 </>
             )}
 
             {userRole === 'student' && (
                 <>
                     <JoinClassroom/>
-                    <LeaveClassroom />
                 </>
             )}
         </div>
