@@ -4,7 +4,12 @@ from django.contrib.auth.models import User
 from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent
 from django.http import JsonResponse,HttpResponse
 import json,secrets,string
+import base64
+from django.core.serializers.json import DjangoJSONEncoder
 
+# to send pdf to frontend
+def get_base64_encoded_pdf(file_data):
+    return base64.b64encode(file_data).decode('utf-8')
 
 # to generate random code for classroom
 def generate_random_code(length=6):
@@ -215,17 +220,29 @@ def UploadFile(request):
 def DownloadCompressedFile(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        id = data.get('id')
+        classroom_id = data.get('id')
         token = data.get('token')
         token = Token.objects.get(key=token)
 
     try:
         if token is not None:
-            compressed_file = ClassroomCompressedFile.objects.get(id=id)
-            # Set appropriate response headers for file download
-            response = HttpResponse(compressed_file.uploaded_file, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="{compressed_file.id}.pdf"'
-            return response
+            classroom = Classroom.objects.get(Id=classroom_id)
+            contents = ClassroomContent.objects.filter(ClassroomId=classroom,IsHead=True)
+            compressed_files = []
+            multiple_to_single_file = []
+
+            for content in contents:
+                for id in content.ObjectKey:
+                    file = ClassroomCompressedFile.objects.get(id=id)
+                    file_data={
+                        'id' : file.id,
+                        'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+                        'uploaded_at' : file.uploaded_at
+                    }
+                    multiple_to_single_file.append(file_data)
+            
+                compressed_files.append(multiple_to_single_file)
+            return JsonResponse(compressed_files,safe=False,encoder=DjangoJSONEncoder)
     except:
         return JsonResponse({'message':'error'},status=500)
 
