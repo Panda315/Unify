@@ -159,9 +159,12 @@ class ClassroomContent(models.Model):
 class CourseContent(models.Model):
     Id = models.AutoField(primary_key=True)
     ObjectKey = models.CharField(max_length=200)
-    Coursecode = models.CharField(max_length=8)
-    CourseBy = models.CharField(max_length=30)      # name of the educator
+    CourseName = models.CharField(max_length=100,default=None)
+    CourseBy = models.CharField(max_length=12)      # ku id of the educator
+    Instructor = models.CharField(max_length=50,default=None)   # name of the instructor
     Description = models.TextField()
-    Like = models.IntegerField()    
+    Like = models.IntegerField(null=True,default=None)    
     CoverImage = models.ImageField(default=None)
-    Enrolled = models.IntegerField(default=None)    # to store the number of users enrolled in the course
+    Enrolled = models.IntegerField(null=True,default=None)    # to store the number of users enrolled in the course
+    VerifiedBy = models.CharField(max_length=12,default=None)
+    VerifierName = models.CharField(max_length=100,default=None)
