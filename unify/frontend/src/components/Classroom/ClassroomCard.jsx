@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Link, useParams } from 'react-router-dom';
 import { Box, Text, Avatar } from '@chakra-ui/react';
-
 // Function to generate a random background color
 function getRandomColor() {
   const colors = ['#FF5733', '#33FF9F', '#337DFF', '#FF3389'];
