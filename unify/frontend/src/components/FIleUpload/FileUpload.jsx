@@ -10,23 +10,51 @@ const FileUpload = () => {
     setSelectedFile(e.target.files[0]);
   };
 
+  // const handleUpload = async () => {
+  //   if (selectedFile) {
+  //     const formData = new FormData();
+  //     formData.append('file', selectedFile);
+  //     // let file = selectedFile
+  //     // console.log(file)
+  //     try {
+  //       // if(!formData.file){
+  //       const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
+  //         method : 'POST',
+  //         headers : {
+  //           'Content-Type' : 'application/json'
+  //         },
+  //         // body: JSON.stringify({
+  //         //   formData
+  //         // }),
+  //         body : formData
+  //       });
+
+  //       if (response.ok) {
+  //         setUploadStatus('File uploaded successfully!');
+  //       } else {
+  //         setUploadStatus('File upload failed.');
+  //       // }
+  //     }
+  //     } catch (error) {
+  //       setUploadStatus('Error uploading file.');
+  //       console.error('Error uploading file:', error);
+  //     }
+  //   } else {
+  //     setUploadStatus('No file selected.');
+  //   }
+  // };
+
   const handleUpload = async () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      // let file = selectedFile
-      // console.log(file)
+  
       try {
         const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
-          method : 'POST',
-          headers : {
-            'Content-Type' : 'application/json'
-          },
-          body: JSON.stringify({
-            formData
-          }),
+          method: 'POST',
+          body: formData,
         });
-
+  
         if (response.ok) {
           setUploadStatus('File uploaded successfully!');
         } else {
@@ -40,6 +68,7 @@ const FileUpload = () => {
       setUploadStatus('No file selected.');
     }
   };
+  
 
   const handleDragEnter = (e) => {
     e.preventDefault();
