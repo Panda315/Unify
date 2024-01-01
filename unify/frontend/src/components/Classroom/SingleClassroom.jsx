@@ -14,6 +14,19 @@ function SingleClassroom() {
   const instructor = queryParams.get('instructor');
   
   const [classroom, setClassroom] = useState(null);
+
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+      // Fetch user role from local storage
+      const roleFromStorage = localStorage.getItem('role');
+      if (roleFromStorage) {
+          setUserRole(roleFromStorage);
+      } else {
+          console.error('User role not found in local storage');
+      }
+
+  }, []);
   
   useEffect(() => {
     // Simulated delay to mimic API call for classroom details
@@ -41,8 +54,16 @@ function SingleClassroom() {
       <Box gridColumn="1 / 2"
         marginTop="2rem"
       > {/* First column */}
+
+{userRole === 'faculty' && (
+                <>
+                    <DeleteClassroom />
+                </>
+            )}
+
       
-        <DeleteClassroom />
+      
+        
       </Box>
       <Box gridColumn="2 / 3"> {/* Second column */}
         <Box

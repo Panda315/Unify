@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ClassroomCard from './ClassroomCard'; // Assuming the path to your ClassroomCard component
-import FileUpload from '../FIleUpload/FileUpload';
 import CreateClassroom from './CreateClassroom';
 import JoinClassroom from './JoinClassroom';
 
@@ -75,7 +74,6 @@ function Classroom() {
                 ))}
             </div>
 
-            <FileUpload/>
             
             {userRole === 'faculty' && (
                 <>

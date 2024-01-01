@@ -40,6 +40,7 @@ export function App() {
           {isAuthenticated() && isA() === "student" && <Route exact path="/events" Component={ViewEvents} />}
           {isAuthenticated() && isA() === "student" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "student" && <Route exact path='/classroom' element={<Classroom/>}/>}
+          {isAuthenticated() && isA() === "student" && <Route exact path="/classroom/:Id" Component={SingleClassroom}/>}
 
           {isAuthenticated() && isA() === "student" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
 
