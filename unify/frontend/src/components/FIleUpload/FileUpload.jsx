@@ -368,12 +368,16 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Text } from '@chakra-ui/react';
 
-const FileUpload = () => {
+
+const FileUpload = ({classroom_id}) => {
   const [role, setUserRole] = useState('');
   const [token, setUserToken] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
   const [description, setDescription] = useState(''); // State to store file description
+  const [isHead, setIsHead] = useState(false); // Default value false
+  const [head, setHead] = useState('');
+
 
   useEffect(() => {
     // Fetch user role from local storage
@@ -394,6 +398,23 @@ const FileUpload = () => {
     }
   }, []);
 
+
+    useEffect(() => {
+    if (role === 'faculty') {
+      setIsHead(true);
+    } else {
+      setIsHead(false);
+    }
+  }, [role]);
+
+  useEffect(() => {
+    if (role === 'faculty') {
+      setHead('');
+    } else {
+      setIsHead(1);
+    }
+  }, [role]);
+
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
@@ -402,23 +423,55 @@ const FileUpload = () => {
     setDescription(e.target.value);
   };
 
+  // const handleUpload = async () => {
+  //   if (selectedFile) {
+  //   const formData = new FormData();  
+  //   formData.append('file', file);
+  //   formData.append('token', token);
+  //   formData.append('classroom_id', classroom_id);
+  //   formData.append('description', description);
+  //   formData.append('is_head', isHead);
+  //   formData.append('role', role);
+  //   formData.append('head', head);
+    
+
+  //     try {
+  //       const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
+  //         method: 'POST',
+  //         body: formData,
+  //       });
+
+  //       if (response.ok) {
+  //         setUploadStatus('File uploaded successfully!');
+  //       } else {
+  //         setUploadStatus('File upload failed.');
+  //       }
+  //     } catch (error) {
+  //       setUploadStatus('Error uploading file.');
+  //       console.error('Error uploading file:', error);
+  //     }
+  //   } else {
+  //     setUploadStatus('No file selected.');
+  //   }
+  // };
+
   const handleUpload = async () => {
     if (selectedFile) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('token', token);
-    formData.append('classroom_id', classroom_id);
-    formData.append('description', description);
-    formData.append('is_head', isHead);
-    formData.append('role', role);
-    formData.append('head', head);
-
+      const formData = new FormData();  
+      formData.append('file', selectedFile);
+      formData.append('token', token);
+      formData.append('classroom_id', classroom_id);
+      formData.append('description', description);
+      formData.append('is_head', isHead);
+      formData.append('role', role);
+      formData.append('head', head);
+  
       try {
         const response = await fetch('http://localhost:8000/uploadclassroomfile/', {
           method: 'POST',
           body: formData,
         });
-
+  
         if (response.ok) {
           setUploadStatus('File uploaded successfully!');
         } else {
@@ -432,7 +485,7 @@ const FileUpload = () => {
       setUploadStatus('No file selected.');
     }
   };
-
+  
   return (
     <Box
       borderWidth="1px"
