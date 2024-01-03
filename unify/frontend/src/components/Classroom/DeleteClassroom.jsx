@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import {
   Box,
-  Heading,
   FormControl,
   FormLabel,
   Input,
@@ -12,7 +11,6 @@ import {
 function DeleteClassroom() {
   const [classroomCode, setClassroomCode] = useState('');
   const [userToken, setUserToken] = useState('');
-
   const [deleteMessage, setDeleteMessage] = useState('');
 
   useEffect(() => {
@@ -23,7 +21,6 @@ function DeleteClassroom() {
       console.error('User token not found in local storage');
     }
   }, []);
-
 
   const handleClassroomCodeChange = (e) => {
     setClassroomCode(e.target.value);

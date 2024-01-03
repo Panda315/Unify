@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import ViewEvents from "../Events/ViewEvents";
-import CreateEvent from "../Events/CreateEvent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from 'react';
+import ViewEvents from '../Events/ViewEvents';
+import CreateEvent from '../Events/CreateEvent';
+import { Box, Button, Flex, IconButton } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 const TeacherHome = () => {
   const [showCreateEvent, setShowCreateEvent] = useState(false);
@@ -16,67 +16,59 @@ const TeacherHome = () => {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-    >
-        {!showCreateEvent ? (
-          <div style={{ textAlign: "center" , }}>
-         <div
-  style={{
-    marginTop: "0.5rem",
-    marginBottom: "-1.15rem", 
-    marginLeft: "1rem",
-    backgroundColor: "green",
-    color: "white",
-    borderRadius: "50%",
-    width: "3rem",
-    height: "2.5rem",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  <button
-    onClick={handleAddEventsClick}
-    style={{
-      backgroundColor: "transparent",
-      border: "none",
-      width: "100%",
-      height: "100%",
-      padding: 0,
-      margin: 0,
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-            {/* Add Events */}
-            <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "1px" }} />
-          </button>
-          </div>
-          <ViewEvents />
-        </div>
+    <Flex flexDirection="column" minHeight="100vh">
+      <ViewEvents />
+      {!showCreateEvent ? (
+        <Box textAlign="center">
+
+          <Box
+            marginTop="0.5rem"
+            marginBottom="-1.15rem"
+            marginLeft="1rem"
+            backgroundColor="green"
+            color="white"
+            borderRadius="8px" // Rounded corners to make it square
+            width="10rem"
+            height="10rem" // Equal width and height to make it square
+            cursor="pointer"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            bgColor="blue.300"
+          >
+            <IconButton
+              icon={<AddIcon />}
+              onClick={handleAddEventsClick}
+              variant="unstyled"
+              aria-label="Add Event"
+              width="100%" // Set width to 100% to occupy the box space
+              height="100%" // Set height to 100% to occupy the box space
+              fontSize="30px"
+            />
+          </Box>
+        </Box>
       ) : (
-        <div style={{ margin: "20px" }}>
-          <button
+        <Box margin="20px">
+          <Button
             onClick={handleCloseClick}
-            style={{
-              backgroundColor: "red",
-              color: "white",
-              borderRadius: "5px",
-              padding: "10px 20px",
-              cursor: "pointer",
-            }}
+            backgroundColor="red"
+            color="white"
+            borderRadius="5px"
+            padding="10px 20px"
+            cursor="pointer"
           >
             Close
-          </button>
+          </Button>
           <CreateEvent />
-        </div>
+        </Box>
       )}
-    </div>
+    </Flex>
   );
-};
+};  
 
 export default TeacherHome;
+
+
+
+
+

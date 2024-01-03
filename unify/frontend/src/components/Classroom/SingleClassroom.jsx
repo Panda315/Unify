@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Box, Text, Grid } from '@chakra-ui/react';
 import DeleteClassroom from './DeleteClassroom';
 import Calendar from 'react-calendar'; // Import Calendar component from react-calendar
+import FileUpload from '../FIleUpload/FileUpload';
 
 function SingleClassroom() {
   const { Id } = useParams(); // Extract parameters from the URL
@@ -61,6 +62,10 @@ function SingleClassroom() {
                 </>
             )}
 
+            <FileUpload/>
+
+
+
       
       
         
@@ -87,9 +92,11 @@ function SingleClassroom() {
           </Text>
             {Id}
         </Box>
+        Announcement and assignment notices are to be shown here
       </Box>
       <Box gridColumn="3 / 4" marginLeft="4rem" marginTop="3rem"> {/* Third column */}
         <Calendar /> {/* Render the Calendar component */}
+      
       </Box>
     </Grid>
   );

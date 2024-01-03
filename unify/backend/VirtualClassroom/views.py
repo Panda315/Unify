@@ -256,6 +256,7 @@ def LeaveClassroom(request):
         data = json.loads(request.body)
         token = data['token']
         classroom_id = data["classroom_id"]
+        print(token,classroom_id)
 
     try:
         token = Token.objects.get(key=token)

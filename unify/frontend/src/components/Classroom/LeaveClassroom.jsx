@@ -20,15 +20,15 @@ function LeaveClassroom() {
 
    
 
-    useEffect(() => {
-        const tokenFromStorage = localStorage.getItem('token');
-        if(tokenFromStorage){
-            setUserToken(tokenFromStorage);
-        }
-        else {
-            console.error('User token not found in local storage');
-        }
-    }, [])
+  useEffect(() => {
+    const tokenFromStorage = localStorage.getItem('token');
+    if(tokenFromStorage){
+        setUserToken(tokenFromStorage);
+    }
+    else {
+        console.error('User token not found in local storage');
+    }
+}, [])
 
 
   const handleLeave = async () => {
