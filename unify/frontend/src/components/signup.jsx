@@ -52,12 +52,16 @@ function Login() {
         const data = await response.json()
         localStorage.setItem('token', data.token);
         localStorage.setItem('role',"student")
+        localStorage.setItem('first_name',data.first_name)
+        localStorage.setItem('last_name',data.last_name)
         window.location.href = "/home"
       }
       else if(response.status === 201){
         const data = await response.json()
         localStorage.setItem('token', data.token);
         localStorage.setItem('role',"faculty")
+        localStorage.setItem('first_name',data.first_name)
+        localStorage.setItem('last_name',data.last_name)
         window.location.href = "/classroom"
       }
       else {
