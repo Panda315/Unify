@@ -14,6 +14,7 @@ class Profile(models.Model):
 class ClassroomCompressedFile(models.Model):
     uploaded_file = models.BinaryField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    file_name = models.CharField(max_length=100,default=None,blank=True)
 
 # School table
 class School(models.Model):

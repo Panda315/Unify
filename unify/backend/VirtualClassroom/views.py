@@ -153,65 +153,100 @@ def UploadFile(request):
         role = request.POST.get("role")
         head = request.POST.get('head')         # principle notice ko classroom_content ko id
         file = request.FILES.get('file')
-        
-    try:
         token = Token.objects.get(key=token)
         user = User.objects.get(id=token.user_id)
+        
+    try:
 
-        binary_data = file.read()
-        # creating a new instance and storing the binary data in the database
-        id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data).id
-
-        if role == "student":
-            student = Student.objects.get(Email=user.email)
-            try:
-                has_previous_submission = ClassroomContent.objects.get(Sender=student.Id,Head=head)
-                has_previous_submission.ObjectKey.append(id)
-                has_previous_submission.save()
-
-                classroom_content = ClassroomContent.objects.get(Id=head)
-                classroom_content.UploadedFiles.append(id)
-                classroom_content.save()
-                JsonResponse({'message':'success'},status=200)
-
-            except:
-                classroom_id = Classroom.objects.get(Id=classroom_id)
+        if file != "":
+            binary_data = file.read()
+            # creating a new instance and storing the binary data in the database
+            id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data,file_name=file.name).id
+            classroom_id = Classroom.objects.get(Id=classroom_id)
+            if role == "student":
+                student = Student.objects.get(Email=user.email)
                 ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
                 classroom_content = ClassroomContent.objects.get(Id=head)
                 classroom_content.UploadedFiles.append(id)
                 classroom_content.save()
                 return JsonResponse({'message':'success'},status=200)
-            
-        else:
-            faculty = Faculty.objects.get(Email=user.email)
-            if isHead:
-                classroom_id = Classroom.objects.get(Id=classroom_id)
+                
+            else:
+                faculty = Faculty.objects.get(Email=user.email)
                 classroom_content = ClassroomContent.objects.create(
-                    ObjectKey=[id],
-                    ClassroomId=classroom_id,
-                    Sender=faculty.Id,
-                    IsHead=True,
-                    Head=0,
-                    Description=description
-                )
+                        ObjectKey=[id],
+                        ClassroomId=classroom_id,
+                        Sender=faculty.Id,
+                        IsHead=True,
+                        Head=0,
+                        Description=description
+                    )
 
                 classroom_content.Head = classroom_content.Id
                 classroom_content.save()
-
-            else:
-                # send isHead false if question post garda if first pdf bahek aru pdf edit garera haldai cha bhane
-                try:
-                    has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=True)
-                    has_previous_submission.ObjectKey.append(id)
-                    has_previous_submission.save()
-                    return JsonResponse({'message':'success'},status=200) 
-                except:
-                    return JsonResponse({'message':'error from faculty.isHead else block'},status=500)
-            return JsonResponse({'message':'success'},status=200)
+                return JsonResponse({'message':'success'},status=200)
             
+        else:
+            classroom_id = Classroom.objects.get(Id=classroom_id)
+            if role == "student":
+                student = Student.objects.get(Email=user.email)
+                ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                classroom_content = ClassroomContent.objects.get(Id=head)
+                classroom_content.UploadedFiles.append(id)
+                classroom_content.save()
+                return JsonResponse({'message':'success'},status=200)
+                
+            else:
+                faculty = Faculty.objects.get(Email=user.email)
+                classroom_content = ClassroomContent.objects.create(
+                        ObjectKey=[id],
+                        ClassroomId=classroom_id,
+                        Sender=faculty.Id,
+                        IsHead=True,
+                        Head=0,
+                        Description=description
+                    )
+
+                classroom_content.Head = classroom_content.Id
+                classroom_content.save()
+                return JsonResponse({'message':'success'},status=200)
     except:
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
     
+
+# load particular assignment in the classroom ( for students )
+@csrf_exempt
+def LoadParticularAssignment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        classroom_id = data.get('id')
+        head = data.get('head')
+        token = data.get('token')
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id=token.user_id)
+
+    try:
+        classroom = Classroom.objects.get(Id=classroom_id)
+        Classroom_content = ClassroomContent.objects.get(ClassroomId=classroom,Head=head)
+
+        student = Student.objects.get(Email=user.email)
+        classroom_content = ClassroomContent.objects.get(ClassroomId=classroom,Head=head,Sender=student.Id)
+        multiple_to_single_file = []
+        for id in classroom_content.ObjectKey:
+                file = ClassroomCompressedFile.objects.get(id=id)
+                file_data={
+                    'id' : file.id,
+                    'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+                    'uploaded_at' : file.uploaded_at,
+                    'file_name' : file.file_name,
+                    'description' : classroom_content.Description
+                }
+                multiple_to_single_file.append(file_data)
+        return JsonResponse(multiple_to_single_file,safe=False,encoder=DjangoJSONEncoder)
+    except:
+        return JsonResponse({'message':'error'},status=500)
+
+
 
 # load assignment
 @csrf_exempt
@@ -235,7 +270,9 @@ def DownloadCompressedFile(request):
                     file_data={
                         'id' : file.id,
                         'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
-                        'uploaded_at' : file.uploaded_at
+                        'uploaded_at' : file.uploaded_at,
+                        'file_name' : file.file_name,
+                        'description' : contents.Description
                     }
                     multiple_to_single_file.append(file_data)
             
