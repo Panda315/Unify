@@ -18,10 +18,8 @@ def login_view(request):
         if user is not None:
             login(request,user)
             token, _ = Token.objects.get_or_create(user=user)
-            # if user.profile.is_student:
-            return JsonResponse({"token": str(token)}, status= 200 if(user.profile.is_student) else 201)
-            # elif user.profile.is_faculty:
-            #     return JsonResponse({"token": str(token)},status=201)
+            print(user.first_name + user.last_name)
+            return JsonResponse({"token": str(token),"first_name":str(user.first_name),"last_name":str(user.last_name)}, status= 200 if(user.profile.is_student) else 201)
             
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
