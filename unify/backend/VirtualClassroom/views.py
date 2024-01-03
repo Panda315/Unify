@@ -201,9 +201,7 @@ def UploadFile(request):
             else:
                 # send isHead false if question post garda if first pdf bahek aru pdf edit garera haldai cha bhane
                 try:
-                    print("eta che ayo")
                     has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=True)
-                    print(has_previous_submission.Id)
                     has_previous_submission.ObjectKey.append(id)
                     has_previous_submission.save()
                     return JsonResponse({'message':'success'},status=200) 
