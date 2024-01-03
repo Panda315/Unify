@@ -47,6 +47,8 @@ urlpatterns = [
     path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom'),
     path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses'),
     path('downloadfile/',VirtualClassroom_views.DownloadCompressedFile,name='downloadfile'),
-
+    path('removefile/',VirtualClassroom_views.RemoveFile,name='removefile'),
+    path('loadfile/',VirtualClassroom_views.LoadParticularAssignment,name='loadfile'),
+    path('loadall/',VirtualClassroom_views.LoadAllSubmission,name='loadallsubmission'),
     path('routine/', include('Routine.urls'))
 ]

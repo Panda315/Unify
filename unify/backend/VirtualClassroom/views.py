@@ -303,6 +303,33 @@ def DownloadCompressedFile(request):
         return JsonResponse({'message':'error'},status=500)
 
 
+
+#Load all submissions
+@csrf_exempt
+def LoadAllSubmission(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        head = data['head']
+
+    try:
+        content = ClassroomContent.objects.get(Id=head)
+        multiple_to_single_file = []
+        compressed_files = []
+        for id in content.UploadedFiles:
+            file = ClassroomCompressedFile.objects.get(id=id)
+            file_data={
+                'id' : file.id,
+                'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+                'uploaded_at' : file.uploaded_at,
+                'file_name' : file.file_name,
+            }
+            multiple_to_single_file.append(file_data)
+        compressed_files.append(multiple_to_single_file)
+        return JsonResponse(compressed_files,safe=False,encoder=DjangoJSONEncoder)
+    except:
+        return JsonResponse({'message':'Error'},status=500)
+
+
 # leave classroom
 @csrf_exempt
 def LeaveClassroom(request):
