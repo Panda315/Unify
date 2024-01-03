@@ -10,6 +10,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import Classroom from './components/Classroom/Classroom';
 import UserProfile from './components/Profile/UserProfile';
 import TeacherHome from './components/Teacher/TeacherEvents';
+import CreateRoutine from './components/Routine/CreateRoutine';
 import StudentRoutine from './components/Student/StudentRoutine';
 import StudentComment from './components/Student/Comment';
 import OpenSchool from './components/OpenSchool/OpenSchool';
@@ -46,8 +47,8 @@ export function App() {
 
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/home" Component={Home} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/events" Component={ViewEvents} />}
-          {isAuthenticated() && isA() === "faculty" && <Route exact path="/events/create" Component={TeacherHome} />}
-          {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={StudentRoutine} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/events/create" Component={CreateEvent} />}
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={CreateRoutine} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/classroom/:Id" Component={SingleClassroom}/>}
       
