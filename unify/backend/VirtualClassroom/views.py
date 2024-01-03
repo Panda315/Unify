@@ -72,8 +72,8 @@ def JoinClassroom(request):
             
             else:
                 classroom.StudentId.append(student.Id)
-                student.ClassroomId.append(classroom.Id)
                 classroom.save()
+                student.ClassroomId.append(classroom.Id)
                 student.save()
                 return JsonResponse({'message':"Sucess"},status=200)
         except Exception as e:
@@ -244,10 +244,6 @@ def DownloadCompressedFile(request):
     except:
         return JsonResponse({'message':'error'},status=500)
 
-    
-
-    
-
 
 # leave classroom
 @csrf_exempt
@@ -255,8 +251,7 @@ def LeaveClassroom(request):
     if request.method == "POST":
         data = json.loads(request.body)
         token = data['token']
-        classroom_id = data["classroom_id"]
-        print(token,classroom_id)
+        classroom_id = data.get("classroom_id")
 
     try:
         token = Token.objects.get(key=token)
@@ -270,12 +265,13 @@ def LeaveClassroom(request):
             classroom.save()
 
             # removing the classroom from classroom array
-            student.ClassroomId.remove(classroom_id)
+            student.ClassroomId.remove(classroom.Id)
             student.save()
 
             # removing the contents having the student in that particular class
             classroom_content = ClassroomContent.objects.filter(ClassroomId=classroom_id,Sender=student.Id)
-            classroom_content.delete()
+            classroom_content.delete()          # head notice ko uploaded files bata remove garnu parne
+            print(classroom_content.Id)
 
             return JsonResponse({'message':'Sucess'},status=200)
     except:

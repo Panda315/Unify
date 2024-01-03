@@ -70,7 +70,7 @@ function LeaveClassroom() {
       <FormControl>
         <FormLabel htmlFor="classroomId">Classroom ID:</FormLabel>
         <Input
-          type="text"
+          type="integer"
           id="classroomId"
           value={classroomId}
           onChange={handleClassroomIdChange}

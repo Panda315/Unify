@@ -24,7 +24,7 @@ def login_view(request):
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
 
-    return render(request,'../frontend/src/components/login.jsx')
+    return render(request,'../frontend/src/components/login.jsx') # yo na rakhe ni huncha
         
 
 @csrf_exempt
