@@ -1,5 +1,7 @@
 import React,{useState} from 'react';
 import Cookies from 'js-cookie';
+import { FaRegUserCircle } from "react-icons/fa";
+
 import {
   Box,
   Button,
@@ -9,6 +11,7 @@ import {
   Input,
   Grid,
   GridItem,
+  Icon,
   VStack,
   Checkbox,
   Link,
@@ -76,8 +79,12 @@ function Login() {
         alignItems="center"
         minH="100vh"
         bg="gray.100"
-        backgroundImage="url('https://scontent.fbhr4-1.fna.fbcdn.net/v/t1.6435-9/75303675_1356536567854965_3535707865085902848_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=e3f864&_nc_ohc=qN7o8jxiNH8AX-m5EaU&_nc_ht=scontent.fbhr4-1.fna&oh=00_AfBNV2UDjbyL6-8JD1vQav1nbKmWPhbd-8_p4p1HAsjkYA&oe=653DE29B')"
         backgroundSize="cover"
+        backgroundRepeat="no-repeat"
+        height="100vh"    
+           backgroundImage="url('https://assets-api.kathmandupost.com/thumb.php?src=https://assets-cdn.kathmandupost.com/uploads/source/news/2020/opinion/Kathmandu-University-(2).jpg&w=900&height=601')"
+           backgroundPosition="center"
+           minHeight="100vh"
       >
         <Box
           p={8}
@@ -92,8 +99,11 @@ function Login() {
           alignItems="center"
           mr={10}
         >
-          <Box textAlign="center" mb={5}>
-            <Heading>Login</Heading>
+          <Box textAlign="center" mb={4}>
+          <Heading as="h1" size="lg">
+            <Icon as={FaRegUserCircle} fontSize="6xl" mr={2} />
+            
+          </Heading>
           </Box>
 
           <form onSubmit={HandleSubmit}>
@@ -141,8 +151,7 @@ function Login() {
                   fontSize="md"
                   w="100%"
                 >
-                  Sign Up
-                </Button>
+Log In                 </Button>
               </GridItem>
             </Grid>
           </form>
