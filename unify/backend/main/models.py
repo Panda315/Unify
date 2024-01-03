@@ -75,11 +75,11 @@ class Routine(models.Model):
     Program = models.ForeignKey(Program,to_field="Code",on_delete=models.CASCADE,default=None)
     Batch = models.IntegerField()
     WeekDay = models.CharField(max_length=10)
-    StartTime = models.IntegerField()
-    EndTime = models.IntegerField()
-    Hour = models.IntegerField()
+    StartTime = models.CharField(max_length=10)
+    EndTime = models.CharField(max_length=10)
+    # Hour = models.IntegerField()
     RoomNo = models.IntegerField(null=True,blank=True)
-    BlockNo = models.IntegerField()
+    # BlockNo = models.IntegerField()
     Course = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
 
 class Classroom(models.Model):
@@ -151,7 +151,7 @@ class Room(models.Model):
 # to store the content of virtual classroom
 class ClassroomContent(models.Model):
     Id = models.AutoField(primary_key=True)
-    ObjectKey = ArrayField(models.IntegerField(blank=True,null=True),default=list)        # to store the link of videos stored in another model
+    Object_Key = models.IntegerField(default=None,blank=True,null=True)    # to store the link of videos stored in another model
     ClassroomId = models.ForeignKey(Classroom,on_delete=models.CASCADE)
     Sender = models.CharField(max_length=12)
     IsHead = models.BooleanField(default=False)  # to check if the content is the front content ( like assignment question )
