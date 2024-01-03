@@ -172,3 +172,23 @@ class CourseContent(models.Model):
     Enrolled = models.IntegerField(null=True,default=None)    # to store the number of users enrolled in the course
     VerifiedBy = models.CharField(max_length=12,default=None)
     VerifierName = models.CharField(max_length=100,default=None)
+
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.PROTECT)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    date = models.DateField()
+    status = models.CharField(max_length=8)
+
+class Location(models.Model):
+    faculty_id = models.CharField(max_length=12)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+class Session(models.Model):
+    faculty_id = models.CharField(max_length=12)
+    program_id = models.CharField(max_length=12)
+    batch = models.IntegerField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    start_time = models.TimeField()

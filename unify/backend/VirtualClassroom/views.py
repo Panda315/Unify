@@ -1,10 +1,14 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, Attendance, Session
 from django.http import JsonResponse,HttpResponse
 import json,secrets,string
+from django.shortcuts import render
+from django.forms.models import model_to_dict
+from django.core import serializers
 import base64
+from datetime import datetime
 from django.core.serializers.json import DjangoJSONEncoder
 
 # to send pdf to frontend
@@ -25,6 +29,105 @@ def generate_unique_code():
         if not Classroom.objects.filter(ClassroomCode=code).exists():
             return code
 
+@csrf_exempt
+def student_view(request):
+    print("writing to database")
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        status = data.get('status')
+        course_id = data.get('course_id')
+        faculty_id= data.get('faculty_id')
+        student_id = data.get('student_id')
+
+    try:
+        print("entered try block")
+        date = datetime.today().strftime('%Y-%m-%d')
+        
+        attendance = Attendance.objects.create(
+            student = Student.objects.get(student_id=student_id),
+            faculty = Faculty.objects.get(faculty_id=faculty_id),
+            course = Course.objects.get(course_id=course_id),
+            date = date,
+            status = status
+        )
+
+        response = {
+            'success': True,
+            'status': 'Present'
+        }
+
+        return JsonResponse(response)
+    except Exception as e:
+        print(e)
+    
+    return render(request, 'build/index.html')
+
+@csrf_exempt
+def start_session(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print("Received data:", data)
+
+    try:
+        new_session = Session()
+
+        new_session.faculty_id = data.get('faculty_id')
+        new_session.program_id = data.get('program_id')
+        new_session.batch = data.get('batch')
+        new_session.latitude = data.get('latitude')
+        new_session.longitude = data.get('longitude')
+        start_time_str = data.get('start_time')
+        start_time = datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+        new_session.start_time = start_time
+
+        new_session.save()
+
+        return JsonResponse({'message': 'success'}, status=200)
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'message': 'error'}, status=500)
+
+@csrf_exempt
+def get_session(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+    try:
+        session = Session.objects.filter(
+            faculty_id = data.get('faculty_id'),
+            program_id = data.get('program_id'),
+            batch = data.get('batch')
+        )
+
+        _session = serializers.serialize('json', session)
+        __session = [model_to_dict(item) for item in session]
+
+        print(__session)
+
+        return JsonResponse(__session, safe=False)
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'message': 'error'}, status=500)
+
+#return attendance
+@csrf_exempt
+def get_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+        faculty_id = data.get('faculty_id')
+    
+    try:
+        attendance_list = Attendance.objects.filter(course_id=course_id,faculty_id=faculty_id)
+        # print(attendance_list)
+        # print(list(attendance_list))
+        _attendance = serializers.serialize('json', attendance_list)
+        __attendance = [model_to_dict(item) for item in attendance_list]
+        print(__attendance)
+        return JsonResponse(__attendance, safe=False)
+
+    except:
+        return JsonResponse({'message':"error"},status=500)
 
 # create classroom
 @csrf_exempt

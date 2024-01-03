@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
@@ -56,3 +57,11 @@ def event_create(request):
             
         else:
             return JsonResponse({'Error' : 'Not permitted'},status=403)
+
+class EventListView(APIView):
+    def get(self, request):
+        events = Event.objects.all()
+
+        serializer = EventSerializer(events, many=True)
+
+        return Response(serializer.data)
