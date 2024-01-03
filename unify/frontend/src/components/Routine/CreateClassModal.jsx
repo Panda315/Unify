@@ -16,8 +16,8 @@ import {
     Select
 } from '@chakra-ui/react';
 
-const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName}) => {
-    const courses = ['COMP315', 'MGTS301']
+const CreateModal = ({ isOpen, onClose, onSave, onUpdate, onDelete, id, day, start, duration, classExists, offset, courses, course, room}) => {
+    console.log(classExists)
     const rooms = [302, 303, 402, 404]
 
     const timeOptions = Array.from({ length: 10 }, (_, i) => ({
@@ -30,8 +30,9 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
      }));
 
     const [startTime, setStartTime] = useState(parseInt(start));
-    const [endTime, setEndTime] = useState(parseInt(start) + parseInt(duration));
-    const [course, setCourse] = useState(courseName);
+    const [endTime, setEndTime] = useState(parseInt(start) + parseInt(duration) + offset);
+    const [selectedCourse, setSelectedCourse] = useState(course);
+    const [selectedRoom, setSelectedRoom] = useState(room);
 
     useEffect(() => {
       setEndTime(parseInt(start) + parseInt(duration));
@@ -42,17 +43,25 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
     )
 
     useEffect(() => {
+      setEndTime(parseInt(start) + parseInt(duration) + offset);
+      console.log(endTime)
+    }, [offset])
+
+    useEffect(() => {
       setStartTime(parseInt(start));
     }, [start]);
 
     useEffect(() => {
-      console.log("index: ", start + duration)
       setEndTime(parseInt(start) + parseInt(duration));
     }, [start, duration]);
 
     useEffect(() => {
-      setCourse(courseName);
-    }, [courseName]);
+      setSelectedCourse(course);
+    }, [course])
+
+    useEffect(() => {
+      setSelectedRoom(room);
+    }, [room])
 
     const handleStartTimeChange = (e) => {
       setStartTime(parseInt(e.target.value));
@@ -62,12 +71,58 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
       setEndTime(parseInt(e.target.value));
     }
 
+    const handleRoomChange = (e) => {
+      setSelectedRoom(e.target.value)
+    }
+
     const handleModalOpen = () => {
       isOpen = true;
     }
     
     const handleCourseNameChange = (e) => {
-      setCourse(e.target.value)
+      setSelectedCourse(e.target.value)
+    }
+
+    const handleSave = () => {
+      const classData = {
+          course: selectedCourse,
+          week_day: day,
+          start_time: startTime,
+          end_time: endTime,
+          room_no: selectedRoom
+        }
+
+      onSave(classData);
+
+      onClose();
+    }
+
+    const handleUpdate = () => {
+      const classData = {
+        routine_id: id,
+        course: selectedCourse,
+        start_time: startTime,
+        end_time: endTime,
+        room_no: selectedRoom
+      };
+
+      onUpdate(classData);
+
+      onClose();
+    }
+
+    const handleDelete = () => {
+      const classData = {
+        course: selectedCourse,
+        week_day: day,
+        start_time: startTime,
+        end_time: endTime,
+        room_no: selectedRoom
+      }
+
+      onDelete(classData);
+
+      onClose();
     }
 
     return (
@@ -81,9 +136,9 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
             <ModalBody>
               <FormControl>
                 <FormLabel>Course</FormLabel>
-                <Select value={course} onChange={handleCourseNameChange}>
-                  {course === '' && <option value="" disabled>Select Course</option>}
-                  {courses.map((c) => (
+                <Select value={selectedCourse} onChange={handleCourseNameChange}>
+                  {selectedCourse === '' && <option value="" disabled>Select Course</option>}
+                  {courses && courses.map((c) => (
                     <option value={c}>{c}</option>
                   ))}
                 </Select>
@@ -91,7 +146,7 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
 
               <FormControl mt={4}>
                 <FormLabel>Room</FormLabel>
-                <Select placeholder='Select Room'>
+                <Select placeholder='Select Room' value={selectedRoom} onChange={handleRoomChange}>
                   {rooms.map((room) => (
                     <option value={room}>{room}</option>
                   ))}
@@ -110,7 +165,6 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
                   </Select>
                   
                   <Select variant='flushed' value={endTime} onChange={handleEndTimeChange}>
-                    {console.log("endtime: ", endTime)}
                     {endTimeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -122,8 +176,9 @@ const CreateModal = ({ isOpen, onClose, start, duration, classExists, courseName
             </ModalBody>
   
             <ModalFooter>
-              <Button variant="solid" colorScheme='green' mr={3}>Save</Button>
-              {classExists && (<Button variant="solid" colorScheme='red' mr={3}>Delete</Button>)}
+              {!id && (<Button variant="solid" colorScheme='green' mr={3} onClick={handleSave}>Save</Button>)}
+              {id && (<Button variant="solid" colorScheme='green' mr={3} onClick={handleUpdate}>Update</Button>)}
+              {classExists && (<Button variant="solid" colorScheme='red' mr={3} onClick={handleDelete}>Delete</Button>)}
               <Button variant="outline" colorScheme='blue' onClick={onClose}>
                 Close
               </Button>

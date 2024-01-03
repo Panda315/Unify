@@ -6,8 +6,8 @@ import {
 const TimeBlock = ({ time, day, classes }) => {
     const classInfo = classes.find(
         (cls) =>
-            cls.weekday === day &&
-            cls.startTime === time
+            cls.WeekDay === day &&
+            cls.StartTime === time
     )
 
     return (
@@ -18,7 +18,7 @@ const TimeBlock = ({ time, day, classes }) => {
             alignItems="center"
             justifyContent="center"
         >
-            {classInfo && `${classInfo.courseName} (Room ${classInfo.room})`}
+            {classInfo && `${classInfo.Course} (Room ${classInfo.RoomNo})`}
         </Box>
     )
 }

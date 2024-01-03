@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from AddData import views as AddData_views
 from UserAuthentication import views as UserAuthentication_views
 from VirtualClassroom import views as VirtualClassroom_views
@@ -40,11 +40,13 @@ urlpatterns = [
     path('loadclassroom/',VirtualClassroom_views.LoadClassrooms,name='loadClassroom'),
     path('uploadclassroomfile/',VirtualClassroom_views.UploadFile,name='uploadFile'),
     path('addProgram/',AddData_views.AddProgram,name='addProgram'),
-    path('saveRoutine/',Routine_views.SaveRoutine,name="saveroutine"),
-    path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
+    # path('saveRoutine/',Routine_views.SaveRoutine,name="saveroutine"),
+    # path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
     path('routineGenerator/',Routine_views.RoutineGenerator,name="routinegenerator"),
     path('addBuilding/',AddData_views.addBuilding,name='addbuilding'),
     path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom'),
     path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses'),
-    path('downloadfile/',VirtualClassroom_views.DownloadCompressedFile,name='downloadfile')
+    path('downloadfile/',VirtualClassroom_views.DownloadCompressedFile,name='downloadfile'),
+
+    path('routine/', include('Routine.urls'))
 ]
