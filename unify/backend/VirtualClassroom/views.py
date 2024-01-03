@@ -272,7 +272,7 @@ def DownloadCompressedFile(request):
                         'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
                         'uploaded_at' : file.uploaded_at,
                         'file_name' : file.file_name,
-                        'description' : contents.Description
+                        'description' : content.Description
                     }
                     multiple_to_single_file.append(file_data)
             
