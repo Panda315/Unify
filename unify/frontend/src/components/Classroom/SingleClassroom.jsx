@@ -142,11 +142,11 @@ function SingleClassroom() {
 
   useEffect(() => {
     // Fetch user role from local storage
-    const tokenFromStorage = localStorage.getItem('role');
+    const tokenFromStorage = localStorage.getItem('token');
     if (tokenFromStorage) {
         setUserToken(tokenFromStorage);
     } else {
-        console.error('User role not found in local storage');
+        console.error('User token not found in local storage');
     }
 
 }, []);
