@@ -99,16 +99,16 @@ def DeleteClassroom(request):
 
             # removing classroom
             classroom.delete()
+            classroom.save()
 
             # removing classroom from faculty ClassroomId
             instructor.ClassroomId.remove(id)
+            instructor.save()
 
             # removing classroom from student ClassroomId
             for student in students:
                 student.ClassroomId.remove(id)
                 student.save()
-            instructor.save()
-            classroom.save()
             
             return JsonResponse({'message':"Sucess"},status=200)
         except Exception as e:
@@ -142,6 +142,32 @@ def LoadClassrooms(request):
         return JsonResponse({'message':'not sucess'},status=500)
 
 # to remove the content
+@csrf_exempt
+def RemoveFile(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        head = data.get('head')
+        token = data.get('token')
+        token = Token.objects.get(key=token)
+    
+    try:
+        user = User.objects.get(id=token.user_id)
+        student = Student.objects.get(Email=user.email)
+        content = ClassroomContent.objects.get(Head=head,Sender=student.Id)
+        file = ClassroomCompressedFile.objects.get(id=content.Object_Key)
+        file.delete()
+        file.save()
+        remove_contents = ClassroomContent.objects.get(UploadFile__contains=[content.Object_Key])
+        remove_contents.UploadedFiles.remove(content.Object_Key)
+        remove_contents.save()
+        content.delete()
+        content.save()
+        return JsonResponse({'message':"Sucess"},status=200)
+    except Exception as e:
+            print(e)
+            return JsonResponse({'message':"Can not delete file"},status=500)
+
+# classroom delete garda sab content delete hunu paryo
 # save pdfs(for assignments)
 @csrf_exempt
 def UploadFile(request):
@@ -165,7 +191,7 @@ def UploadFile(request):
             classroom_id = Classroom.objects.get(Id=classroom_id)
             if role == "student":
                 student = Student.objects.get(Email=user.email)
-                ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                ClassroomContent.objects.create(Object_Key=id,ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
                 classroom_content = ClassroomContent.objects.get(Id=head)
                 classroom_content.UploadedFiles.append(id)
                 classroom_content.save()
@@ -174,7 +200,7 @@ def UploadFile(request):
             else:
                 faculty = Faculty.objects.get(Email=user.email)
                 classroom_content = ClassroomContent.objects.create(
-                        ObjectKey=[id],
+                        Object_Key=id,
                         ClassroomId=classroom_id,
                         Sender=faculty.Id,
                         IsHead=True,
@@ -190,7 +216,7 @@ def UploadFile(request):
             classroom_id = Classroom.objects.get(Id=classroom_id)
             if role == "student":
                 student = Student.objects.get(Email=user.email)
-                ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                ClassroomContent.objects.create(Object_Key=id,ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
                 classroom_content = ClassroomContent.objects.get(Id=head)
                 classroom_content.UploadedFiles.append(id)
                 classroom_content.save()
@@ -199,7 +225,7 @@ def UploadFile(request):
             else:
                 faculty = Faculty.objects.get(Email=user.email)
                 classroom_content = ClassroomContent.objects.create(
-                        ObjectKey=[id],
+                        Object_Key=id,
                         ClassroomId=classroom_id,
                         Sender=faculty.Id,
                         IsHead=True,
@@ -219,29 +245,24 @@ def UploadFile(request):
 def LoadParticularAssignment(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        classroom_id = data.get('id')
         head = data.get('head')
         token = data.get('token')
         token = Token.objects.get(key=token)
         user = User.objects.get(id=token.user_id)
 
     try:
-        classroom = Classroom.objects.get(Id=classroom_id)
-        Classroom_content = ClassroomContent.objects.get(ClassroomId=classroom,Head=head)
-
         student = Student.objects.get(Email=user.email)
-        classroom_content = ClassroomContent.objects.get(ClassroomId=classroom,Head=head,Sender=student.Id)
+        classroom_content = ClassroomContent.objects.get(Head=head,Sender=student.Id)
         multiple_to_single_file = []
-        for id in classroom_content.ObjectKey:
-                file = ClassroomCompressedFile.objects.get(id=id)
-                file_data={
-                    'id' : file.id,
-                    'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
-                    'uploaded_at' : file.uploaded_at,
-                    'file_name' : file.file_name,
-                    'description' : classroom_content.Description
-                }
-                multiple_to_single_file.append(file_data)
+        file = ClassroomCompressedFile.objects.get(id=classroom_content.Object_Key)
+        file_data={
+            'id' : file.id,
+            'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+            'uploaded_at' : file.uploaded_at,
+            'file_name' : file.file_name,
+            'description' : classroom_content.Description
+        }
+        multiple_to_single_file.append(file_data)
         return JsonResponse(multiple_to_single_file,safe=False,encoder=DjangoJSONEncoder)
     except:
         return JsonResponse({'message':'error'},status=500)
@@ -265,7 +286,7 @@ def DownloadCompressedFile(request):
             multiple_to_single_file = []
 
             for content in contents:
-                for id in content.ObjectKey:
+                for id in content.Object_Key:
                     file = ClassroomCompressedFile.objects.get(id=id)
                     file_data={
                         'id' : file.id,

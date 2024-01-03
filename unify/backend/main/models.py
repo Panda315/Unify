@@ -151,7 +151,7 @@ class Room(models.Model):
 # to store the content of virtual classroom
 class ClassroomContent(models.Model):
     Id = models.AutoField(primary_key=True)
-    ObjectKey = ArrayField(models.IntegerField(blank=True,null=True),default=list)        # to store the link of videos stored in another model
+    Object_Key = models.IntegerField(default=None,blank=True,null=True)    # to store the link of videos stored in another model
     ClassroomId = models.ForeignKey(Classroom,on_delete=models.CASCADE)
     Sender = models.CharField(max_length=12)
     IsHead = models.BooleanField(default=False)  # to check if the content is the front content ( like assignment question )
