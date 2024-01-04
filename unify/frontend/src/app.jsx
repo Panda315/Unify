@@ -15,6 +15,7 @@ import StudentRoutine from './components/Student/StudentRoutine';
 import StudentComment from './components/Student/Comment';
 import OpenSchool from './components/OpenSchool/OpenSchool';
 import SingleClassroom from './components/Classroom/SingleClassroom';
+import SingleAssignment from './components/Classroom/SingleAssignment';
 // Create a function to check if the user is authenticated
 const isAuthenticated = () => {
   const userId = localStorage.getItem('token');
@@ -42,6 +43,7 @@ export function App() {
           {isAuthenticated() && isA() === "student" && <Route exact path="/routine" Component={StudentRoutine} />}
           {isAuthenticated() && isA() === "student" && <Route exact path='/classroom' element={<Classroom/>}/>}
           {isAuthenticated() && isA() === "student" && <Route exact path="/classroom/:Id" Component={SingleClassroom}/>}
+          {isAuthenticated() && isA() === "student" && <Route exact path="/assignment/:id" Component={SingleAssignment}/>}
 
           {isAuthenticated() && isA() === "student" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
 
@@ -51,7 +53,8 @@ export function App() {
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/routine" Component={CreateRoutine} />}
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/classroom' element={<Classroom/>}/>}
           {isAuthenticated() && isA() === "faculty" && <Route exact path="/classroom/:Id" Component={SingleClassroom}/>}
-      
+          {isAuthenticated() && isA() === "faculty" && <Route exact path="/assignment/:id" Component={SingleAssignment}/>}
+
 
           {isAuthenticated() && isA() === "faculty" && <Route exact path='/openschool' element={<OpenSchool/>}/>}
         </Routes>
