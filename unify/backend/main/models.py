@@ -153,18 +153,18 @@ class ClassroomContent(models.Model):
 # to store the content of courses uploaded in open school
 class CourseContent(models.Model):
     Id = models.AutoField(primary_key=True)
-    ObjectKey = models.CharField(max_length=200)
+    Url = models.CharField(max_length=100,default=None)
     CourseName = models.CharField(max_length=100,default=None)
     CourseBy = models.CharField(max_length=12)      # ku id of the educator
-    Instructor = models.CharField(max_length=50,default=None)   # name of the instructor
-    Description = models.TextField()
+    Instructor = models.CharField(max_length=100,default=None)   # name of the instructor
+    Description = models.CharField(max_length=200,default=None,null=True)
     Like = models.IntegerField(null=True,default=None)    
-    CoverImage = models.ImageField(default=None)
+    CoverImage = models.BinaryField(default=None)        # object key id
     Enrolled = models.IntegerField(null=True,default=None)    # to store the number of users enrolled in the course
     VerifiedBy = models.CharField(max_length=12,default=None)
     VerifierName = models.CharField(max_length=100,default=None)
 
-class Attendance(models.Model):
+class AttendanceTable(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     # faculty = models.ForeignKey(Faculty, on_delete=models.PROTECT)
@@ -173,7 +173,7 @@ class Attendance(models.Model):
     status = models.CharField(max_length=8)
 
 class Location(models.Model):
-    faculty_id = models.CharField(max_length=12)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE,default=None,null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
@@ -181,7 +181,8 @@ class Session(models.Model):
     # faculty_id = models.CharField(max_length=12)
     # classroom_id = models.IntegerField()
     # batch = models.IntegerField()
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE,default=None,null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     start_time = models.TimeField()
+

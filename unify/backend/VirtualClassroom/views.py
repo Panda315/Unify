@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, Attendance, Session
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, AttendanceTable, Session
 from django.http import JsonResponse,HttpResponse
 import json,secrets,string
 from django.shortcuts import render
@@ -43,7 +43,7 @@ def student_view(request):
         print("entered try block")
         date = datetime.today().strftime('%Y-%m-%d')
         
-        attendance = Attendance.objects.create(
+        attendance = AttendanceTable.objects.create(
             student = Student.objects.get(student_id=student_id),
             faculty = Faculty.objects.get(faculty_id=faculty_id),
             course = Course.objects.get(course_id=course_id),
@@ -127,7 +127,7 @@ def get_attendance(request):
         classroom_obj = Classroom.objects.get(Id=classroom_id)
     
     try:
-        attendance_list = Attendance.objects.filter(classroom=classroom_obj)
+        attendance_list = AttendanceTable.objects.filter(classroom=classroom_obj)
         # print(attendance_list)
         # print(list(attendance_list))
         # _attendance = serializers.serialize('json', attendance_list)
@@ -398,18 +398,17 @@ def DownloadCompressedFile(request):
             multiple_to_single_file = []
 
             for content in contents:
-                for id in content.Object_Key:
-                    file = ClassroomCompressedFile.objects.get(id=id)
-                    file_data={
-                        'id' : file.id,
-                        'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
-                        'uploaded_at' : file.uploaded_at,
-                        'file_name' : file.file_name,
-                        'description' : content.Description
-                    }
-                    multiple_to_single_file.append(file_data)
+                file = ClassroomCompressedFile.objects.get(id=content.Object_Key)
+                file_data={
+                    'id' : file.id,
+                    'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+                    'uploaded_at' : file.uploaded_at,
+                    'file_name' : file.file_name,
+                    'description' : content.Description
+                }
+                multiple_to_single_file.append(file_data)
             
-                compressed_files.append(multiple_to_single_file)
+            compressed_files.append(multiple_to_single_file)
             return JsonResponse(compressed_files,safe=False,encoder=DjangoJSONEncoder)
     except:
         return JsonResponse({'message':'error'},status=500)
