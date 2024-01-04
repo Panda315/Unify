@@ -1,9 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import jwtDecode from "jwt-decode";
-
-const token = localStorage.getItem('jwtToken')
-const user = jwtDecode(token)
 
 const AttendanceSheet = () => {
     const [attendanceData, setAttendanceData] = useState([]);
@@ -20,14 +15,13 @@ const AttendanceSheet = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    course_id: 1,
-                    faculty_id: 1
+                    classroom_id: 1
                 })
             })
 
             const _response = await response.json();
 
-            const filteredResponse =  _response.map(({id, faculty, course, date, ...rest}) => rest)
+            const filteredResponse =  _response.map(({classroom, student, data, status, ...rest}) => rest)
             setAttendanceData(filteredResponse)
             console.log(filteredResponse)
         } catch (error) {
