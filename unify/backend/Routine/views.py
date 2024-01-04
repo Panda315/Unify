@@ -257,7 +257,8 @@ def RoutineGenerator(request):
                         for x in range(7,16):
                             for item in routine_of_given_day:
                                 if item['StartTime'] == x:
-                                    hours = item['Hour']
+                                    hours = item['EndTime'] - item['StartTime']
+                                    # hours = item['Hour']
                                     val = 1
                                     column = 0  # column refers to classroom
                                     row = x     # row refers to time
