@@ -6,6 +6,8 @@ import Calendar from 'react-calendar'; // Import Calendar component from react-c
 import FileUpload from '../FIleUpload/FileUpload';
 import LoadAssignments from './LoadAssignments';
 
+import Attendance from '../Attendance/Attendance';
+
 function SingleClassroom() {
   const { Id } = useParams(); // Extract parameters from the URL
   const queryParams = new URLSearchParams(window.location.search);
@@ -105,7 +107,7 @@ function SingleClassroom() {
       </Box>
       <Box gridColumn="3 / 4" marginLeft="4rem" marginTop="3rem"> {/* Third column */}
         <Calendar /> {/* Render the Calendar component */}
-      
+        <Attendance />
       </Box>
     </Grid>
   );

@@ -39,6 +39,10 @@ urlpatterns = [
     path('deleteclassroom/',VirtualClassroom_views.DeleteClassroom,name="deleteClassroom"),
     path('loadclassroom/',VirtualClassroom_views.LoadClassrooms,name='loadClassroom'),
     path('uploadclassroomfile/',VirtualClassroom_views.UploadFile,name='uploadFile'),
+    path('start_session/', VirtualClassroom_views.start_session, name='startSession'),
+    path('get_session/', VirtualClassroom_views.get_session, name='getSession'),
+    path('get_attendance/', VirtualClassroom_views.get_attendance, name='getAttendance'),
+    path('attendance/student/', VirtualClassroom_views.student_view, name='studentView'),
     path('addProgram/',AddData_views.AddProgram,name='addProgram'),
     # path('saveRoutine/',Routine_views.SaveRoutine,name="saveroutine"),
     # path('getRoutine/',Routine_views.GetRoutine,name="getroutine"),
@@ -47,6 +51,8 @@ urlpatterns = [
     path('leaveclassroom/',VirtualClassroom_views.LeaveClassroom,name='leaveclassroom'),
     path('loadcourses/',OpenSchool_views.LoadCourses,name='loadcourses'),
     path('downloadfile/',VirtualClassroom_views.DownloadCompressedFile,name='downloadfile'),
-
+    path('removefile/',VirtualClassroom_views.RemoveFile,name='removefile'),
+    path('loadfile/',VirtualClassroom_views.LoadParticularAssignment,name='loadfile'),
+    path('loadall/',VirtualClassroom_views.LoadAllSubmission,name='loadallsubmission'),
     path('routine/', include('Routine.urls'))
 ]

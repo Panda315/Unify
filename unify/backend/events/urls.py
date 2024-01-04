@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path('category_list/', views.category_list),
     path('event_create/', views.event_create),
+    path('fetch_events/', views.EventListView.as_view(), name='event-list'),
 ]
 
 if settings.DEBUG:
