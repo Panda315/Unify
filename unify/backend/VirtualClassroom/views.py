@@ -303,7 +303,8 @@ def UploadFile(request):
             classroom_id = Classroom.objects.get(Id=classroom_id)
             if role == "student":
                 student = Student.objects.get(Email=user.email)
-                ClassroomContent.objects.create(Object_Key=id,ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                content = ClassroomContent.objects.get(Id=head)
+                ClassroomContent.objects.create(Object_Key=id,ClassroomId=content.ClassroomId,Sender=student.Id,IsHead=False,Head=head,Description=description)
                 classroom_content = ClassroomContent.objects.get(Id=head)
                 classroom_content.UploadedFiles.append(id)
                 classroom_content.save()

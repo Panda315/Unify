@@ -25,12 +25,10 @@ def event_create(request):
     if request.method == 'POST':
         print("POST Event")
         data = request.data
-
         title = data.get('title')
         startDate = data.get('startDate')
         endDate = data.get('endDate')
         category = Category.objects.get(name=data.get('category'))
-        coverImage = data.get('coverImage')
         description = data.get('description')
         token = data.get('token')
 
@@ -47,7 +45,6 @@ def event_create(request):
                     startDate=startDate,
                     endDate=endDate,
                     category=category,
-                    coverImage=coverImage,
                     description=description
                 )
                 event.save()
