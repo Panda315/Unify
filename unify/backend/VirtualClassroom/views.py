@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, AttendanceTable, Session
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, AttendanceTable, SessionTable
 from django.http import JsonResponse,HttpResponse
 import json,secrets,string
 from django.shortcuts import render
@@ -84,7 +84,7 @@ def start_session(request):
 
         # new_session.save()
 
-        Session.objects.create(
+        SessionTable.objects.create(
             classroom=classroom_obj,
             latitude=data.get('latitude'),
             longitude=data.get('longitude'),
@@ -102,7 +102,7 @@ def get_session(request):
         data = json.loads(request.body)
 
     try:
-        session = Session.objects.filter(
+        session = SessionTable.objects.filter(
             faculty_id = data.get('faculty_id'),
             program_id = data.get('program_id'),
             batch = data.get('batch')

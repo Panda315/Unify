@@ -21,10 +21,7 @@ function CreateEvent() {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/events/category_list/')
-            .then(response => response.json())
-            .then(data => setCategories(data))
-            .catch(error => console.error('Error: ', error));
+       
     }, [])
 
     const handleTitleChange = (event) => {
@@ -49,6 +46,28 @@ function CreateEvent() {
         }
     }
 
+    // try {
+    //     // Make a request to the backend to join the classroom with the entered code
+    //     const response = fetch('http://localhost:8000/category_list/', {
+    //       method: 'GET',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+  
+    //     if (response.ok) {
+    //       // Handle successful join
+    //       setJoinMessage('Joined the classroom successfully!');
+    //       setClassroomCode('');
+    //     } else {
+    //       const error =  response.json();
+    //       setJoinMessage(`Failed to join: ${error.message}`);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error joining classroom:', error);
+    //     setJoinMessage('Error joining classroom. Please try again.');
+    //   }
+
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.target.value)
     }
@@ -72,21 +91,31 @@ function CreateEvent() {
         formData.append('coverImage', image);
         formData.append('description', description);
 
-        fetch('http://127.0.0.1:8000/events/event_create/', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => {
-            if (response.status === 200) {
-                console.log('Message', response)
-                window.location.href = '/events';  // Replace with the desired path
+        try {
+            // Make a request to the backend to join the classroom with the entered code
+            const response = fetch('http://localhost:8000/event_create/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  token: userToken,
+                  title:formData.title ,
+              }),
+            });
+      
+            if (response.ok) {
+              // Handle successful join
+              setJoinMessage('Joined the classroom successfully!');
+              setClassroomCode('');
             } else {
-                console.error('Error:', response);
+              const error =  response.json();
+              setJoinMessage(`Failed to join: ${error.message}`);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+          } catch (error) {
+            console.error('Error joining classroom:', error);
+            setJoinMessage('Error joining classroom. Please try again.');
+          }
     }
 
     return (

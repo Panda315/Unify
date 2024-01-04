@@ -172,12 +172,12 @@ class AttendanceTable(models.Model):
     date = models.DateField()
     status = models.CharField(max_length=8)
 
-class Location(models.Model):
+class LocationTable(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE,default=None,null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
-class Session(models.Model):
+class SessionTable(models.Model):
     # faculty_id = models.CharField(max_length=12)
     # classroom_id = models.IntegerField()
     # batch = models.IntegerField()
