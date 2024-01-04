@@ -14,6 +14,7 @@ class Profile(models.Model):
 class ClassroomCompressedFile(models.Model):
     uploaded_file = models.BinaryField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    file_name = models.CharField(max_length=100,default=None,blank=True)
 
 # School table
 class School(models.Model):
@@ -74,11 +75,11 @@ class Routine(models.Model):
     Program = models.ForeignKey(Program,to_field="Code",on_delete=models.CASCADE,default=None)
     Batch = models.IntegerField()
     WeekDay = models.CharField(max_length=10)
-    StartTime = models.IntegerField()
-    EndTime = models.IntegerField()
-    Hour = models.IntegerField()
+    StartTime = models.CharField(max_length=10)
+    EndTime = models.CharField(max_length=10)
+    # Hour = models.IntegerField()
     RoomNo = models.IntegerField(null=True,blank=True)
-    BlockNo = models.IntegerField()
+    # BlockNo = models.IntegerField()
     Course = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
 
 class Classroom(models.Model):
@@ -150,7 +151,7 @@ class Room(models.Model):
 # to store the content of virtual classroom
 class ClassroomContent(models.Model):
     Id = models.AutoField(primary_key=True)
-    ObjectKey = ArrayField(models.IntegerField(blank=True,null=True),default=list)        # to store the link of videos stored in another model
+    Object_Key = models.IntegerField(default=None,blank=True,null=True)    # to store the link of videos stored in another model
     ClassroomId = models.ForeignKey(Classroom,on_delete=models.CASCADE)
     Sender = models.CharField(max_length=12)
     IsHead = models.BooleanField(default=False)  # to check if the content is the front content ( like assignment question )
@@ -171,3 +172,23 @@ class CourseContent(models.Model):
     Enrolled = models.IntegerField(null=True,default=None)    # to store the number of users enrolled in the course
     VerifiedBy = models.CharField(max_length=12,default=None)
     VerifierName = models.CharField(max_length=100,default=None)
+
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.PROTECT)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    date = models.DateField()
+    status = models.CharField(max_length=8)
+
+class Location(models.Model):
+    faculty_id = models.CharField(max_length=12)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+class Session(models.Model):
+    faculty_id = models.CharField(max_length=12)
+    program_id = models.CharField(max_length=12)
+    batch = models.IntegerField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    start_time = models.TimeField()

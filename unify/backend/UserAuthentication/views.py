@@ -13,7 +13,6 @@ def login_view(request):
         data = json.loads(request.body)
         email = data.get('email')
         password = data.get('password')
-
         user = authenticate(request,email=email,password=password)
         if user is not None:
             login(request,user)
@@ -24,7 +23,7 @@ def login_view(request):
         else:
             return JsonResponse({"error":"Invalid Credentials"},status=401)
 
-    return render(request,'../frontend/src/components/login.jsx')
+    return render(request,'../frontend/src/components/login.jsx') # yo na rakhe ni huncha
         
 
 @csrf_exempt

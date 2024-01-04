@@ -1,10 +1,14 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent
+from main.models import Course,Classroom,Faculty,Student,ClassroomCompressedFile,ClassroomContent, Attendance, Session
 from django.http import JsonResponse,HttpResponse
 import json,secrets,string
+from django.shortcuts import render
+from django.forms.models import model_to_dict
+from django.core import serializers
 import base64
+from datetime import datetime
 from django.core.serializers.json import DjangoJSONEncoder
 
 # to send pdf to frontend
@@ -25,6 +29,105 @@ def generate_unique_code():
         if not Classroom.objects.filter(ClassroomCode=code).exists():
             return code
 
+@csrf_exempt
+def student_view(request):
+    print("writing to database")
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        status = data.get('status')
+        course_id = data.get('course_id')
+        faculty_id= data.get('faculty_id')
+        student_id = data.get('student_id')
+
+    try:
+        print("entered try block")
+        date = datetime.today().strftime('%Y-%m-%d')
+        
+        attendance = Attendance.objects.create(
+            student = Student.objects.get(student_id=student_id),
+            faculty = Faculty.objects.get(faculty_id=faculty_id),
+            course = Course.objects.get(course_id=course_id),
+            date = date,
+            status = status
+        )
+
+        response = {
+            'success': True,
+            'status': 'Present'
+        }
+
+        return JsonResponse(response)
+    except Exception as e:
+        print(e)
+    
+    return render(request, 'build/index.html')
+
+@csrf_exempt
+def start_session(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print("Received data:", data)
+
+    try:
+        new_session = Session()
+
+        new_session.faculty_id = data.get('faculty_id')
+        new_session.program_id = data.get('program_id')
+        new_session.batch = data.get('batch')
+        new_session.latitude = data.get('latitude')
+        new_session.longitude = data.get('longitude')
+        start_time_str = data.get('start_time')
+        start_time = datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+        new_session.start_time = start_time
+
+        new_session.save()
+
+        return JsonResponse({'message': 'success'}, status=200)
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'message': 'error'}, status=500)
+
+@csrf_exempt
+def get_session(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+    try:
+        session = Session.objects.filter(
+            faculty_id = data.get('faculty_id'),
+            program_id = data.get('program_id'),
+            batch = data.get('batch')
+        )
+
+        _session = serializers.serialize('json', session)
+        __session = [model_to_dict(item) for item in session]
+
+        print(__session)
+
+        return JsonResponse(__session, safe=False)
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({'message': 'error'}, status=500)
+
+#return attendance
+@csrf_exempt
+def get_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+        faculty_id = data.get('faculty_id')
+    
+    try:
+        attendance_list = Attendance.objects.filter(course_id=course_id,faculty_id=faculty_id)
+        # print(attendance_list)
+        # print(list(attendance_list))
+        _attendance = serializers.serialize('json', attendance_list)
+        __attendance = [model_to_dict(item) for item in attendance_list]
+        print(__attendance)
+        return JsonResponse(__attendance, safe=False)
+
+    except:
+        return JsonResponse({'message':"error"},status=500)
 
 # create classroom
 @csrf_exempt
@@ -72,8 +175,8 @@ def JoinClassroom(request):
             
             else:
                 classroom.StudentId.append(student.Id)
-                student.ClassroomId.append(classroom.Id)
                 classroom.save()
+                student.ClassroomId.append(classroom.Id)
                 student.save()
                 return JsonResponse({'message':"Sucess"},status=200)
         except Exception as e:
@@ -99,16 +202,16 @@ def DeleteClassroom(request):
 
             # removing classroom
             classroom.delete()
+            classroom.save()
 
             # removing classroom from faculty ClassroomId
             instructor.ClassroomId.remove(id)
+            instructor.save()
 
             # removing classroom from student ClassroomId
             for student in students:
                 student.ClassroomId.remove(id)
                 student.save()
-            instructor.save()
-            classroom.save()
             
             return JsonResponse({'message':"Sucess"},status=200)
         except Exception as e:
@@ -142,6 +245,32 @@ def LoadClassrooms(request):
         return JsonResponse({'message':'not sucess'},status=500)
 
 # to remove the content
+@csrf_exempt
+def RemoveFile(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        head = data.get('head')
+        token = data.get('token')
+        token = Token.objects.get(key=token)
+    
+    try:
+        user = User.objects.get(id=token.user_id)
+        student = Student.objects.get(Email=user.email)
+        content = ClassroomContent.objects.get(Head=head,Sender=student.Id)
+        file = ClassroomCompressedFile.objects.get(id=content.Object_Key)
+        file.delete()
+        file.save()
+        remove_contents = ClassroomContent.objects.get(UploadFile__contains=[content.Object_Key])
+        remove_contents.UploadedFiles.remove(content.Object_Key)
+        remove_contents.save()
+        content.delete()
+        content.save()
+        return JsonResponse({'message':"Sucess"},status=200)
+    except Exception as e:
+            print(e)
+            return JsonResponse({'message':"Can not delete file"},status=500)
+
+# classroom delete garda sab content delete hunu paryo
 # save pdfs(for assignments)
 @csrf_exempt
 def UploadFile(request):
@@ -153,65 +282,95 @@ def UploadFile(request):
         role = request.POST.get("role")
         head = request.POST.get('head')         # principle notice ko classroom_content ko id
         file = request.FILES.get('file')
-        
-    try:
         token = Token.objects.get(key=token)
         user = User.objects.get(id=token.user_id)
+        
+    try:
 
-        binary_data = file.read()
-        # creating a new instance and storing the binary data in the database
-        id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data).id
-
-        if role == "student":
-            student = Student.objects.get(Email=user.email)
-            try:
-                has_previous_submission = ClassroomContent.objects.get(Sender=student.Id,Head=head)
-                has_previous_submission.ObjectKey.append(id)
-                has_previous_submission.save()
-
-                classroom_content = ClassroomContent.objects.get(Id=head)
-                classroom_content.UploadedFiles.append(id)
-                classroom_content.save()
-                JsonResponse({'message':'success'},status=200)
-
-            except:
-                classroom_id = Classroom.objects.get(Id=classroom_id)
-                ClassroomContent.objects.create(ObjectKey=[id],ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+        if file != "":
+            binary_data = file.read()
+            # creating a new instance and storing the binary data in the database
+            id = ClassroomCompressedFile.objects.create(uploaded_file=binary_data,file_name=file.name).id
+            classroom_id = Classroom.objects.get(Id=classroom_id)
+            if role == "student":
+                student = Student.objects.get(Email=user.email)
+                ClassroomContent.objects.create(Object_Key=id,ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
                 classroom_content = ClassroomContent.objects.get(Id=head)
                 classroom_content.UploadedFiles.append(id)
                 classroom_content.save()
                 return JsonResponse({'message':'success'},status=200)
-            
-        else:
-            faculty = Faculty.objects.get(Email=user.email)
-            if isHead:
-                classroom_id = Classroom.objects.get(Id=classroom_id)
+                
+            else:
+                faculty = Faculty.objects.get(Email=user.email)
                 classroom_content = ClassroomContent.objects.create(
-                    ObjectKey=[id],
-                    ClassroomId=classroom_id,
-                    Sender=faculty.Id,
-                    IsHead=True,
-                    Head=0,
-                    Description=description
-                )
+                        Object_Key=id,
+                        ClassroomId=classroom_id,
+                        Sender=faculty.Id,
+                        IsHead=True,
+                        Head=0,
+                        Description=description
+                    )
 
                 classroom_content.Head = classroom_content.Id
                 classroom_content.save()
-
-            else:
-                # send isHead false if question post garda if first pdf bahek aru pdf edit garera haldai cha bhane
-                try:
-                    has_previous_submission = ClassroomContent.objects.get(Sender=faculty.Id,Head=head,IsHead=True)
-                    has_previous_submission.ObjectKey.append(id)
-                    has_previous_submission.save()
-                    return JsonResponse({'message':'success'},status=200) 
-                except:
-                    return JsonResponse({'message':'error from faculty.isHead else block'},status=500)
-            return JsonResponse({'message':'success'},status=200)
+                return JsonResponse({'message':'success'},status=200)
             
+        else:
+            classroom_id = Classroom.objects.get(Id=classroom_id)
+            if role == "student":
+                student = Student.objects.get(Email=user.email)
+                ClassroomContent.objects.create(Object_Key=id,ClassroomId=classroom_id,Sender=student.Id,IsHead=False,Head=head,Description=description)
+                classroom_content = ClassroomContent.objects.get(Id=head)
+                classroom_content.UploadedFiles.append(id)
+                classroom_content.save()
+                return JsonResponse({'message':'success'},status=200)
+                
+            else:
+                faculty = Faculty.objects.get(Email=user.email)
+                classroom_content = ClassroomContent.objects.create(
+                        Object_Key=id,
+                        ClassroomId=classroom_id,
+                        Sender=faculty.Id,
+                        IsHead=True,
+                        Head=0,
+                        Description=description
+                    )
+
+                classroom_content.Head = classroom_content.Id
+                classroom_content.save()
+                return JsonResponse({'message':'success'},status=200)
     except:
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
     
+
+# load particular assignment in the classroom ( for students )
+@csrf_exempt
+def LoadParticularAssignment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        head = data.get('head')
+        token = data.get('token')
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id=token.user_id)
+
+    try:
+        student = Student.objects.get(Email=user.email)
+        classroom_content = ClassroomContent.objects.get(Head=head,Sender=student.Id)
+        multiple_to_single_file = []
+        file = ClassroomCompressedFile.objects.get(id=classroom_content.Object_Key)
+        file_data={
+            'id' : file.id,
+            'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+            'uploaded_at' : file.uploaded_at,
+            'file_name' : file.file_name,
+            'description' : classroom_content.Description
+        }
+        multiple_to_single_file.append(file_data)
+        return JsonResponse(multiple_to_single_file,safe=False,encoder=DjangoJSONEncoder)
+    except:
+        return JsonResponse({'message':'error'},status=500)
+
+
 
 # load assignment
 @csrf_exempt
@@ -230,12 +389,14 @@ def DownloadCompressedFile(request):
             multiple_to_single_file = []
 
             for content in contents:
-                for id in content.ObjectKey:
+                for id in content.Object_Key:
                     file = ClassroomCompressedFile.objects.get(id=id)
                     file_data={
                         'id' : file.id,
                         'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
-                        'uploaded_at' : file.uploaded_at
+                        'uploaded_at' : file.uploaded_at,
+                        'file_name' : file.file_name,
+                        'description' : content.Description
                     }
                     multiple_to_single_file.append(file_data)
             
@@ -244,9 +405,32 @@ def DownloadCompressedFile(request):
     except:
         return JsonResponse({'message':'error'},status=500)
 
-    
 
-    
+
+#Load all submissions
+@csrf_exempt
+def LoadAllSubmission(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        head = data['head']
+
+    try:
+        content = ClassroomContent.objects.get(Id=head)
+        multiple_to_single_file = []
+        compressed_files = []
+        for id in content.UploadedFiles:
+            file = ClassroomCompressedFile.objects.get(id=id)
+            file_data={
+                'id' : file.id,
+                'uploaded_file' :  get_base64_encoded_pdf(file.uploaded_file),
+                'uploaded_at' : file.uploaded_at,
+                'file_name' : file.file_name,
+            }
+            multiple_to_single_file.append(file_data)
+        compressed_files.append(multiple_to_single_file)
+        return JsonResponse(compressed_files,safe=False,encoder=DjangoJSONEncoder)
+    except:
+        return JsonResponse({'message':'Error'},status=500)
 
 
 # leave classroom
@@ -255,8 +439,7 @@ def LeaveClassroom(request):
     if request.method == "POST":
         data = json.loads(request.body)
         token = data['token']
-        classroom_id = data["classroom_id"]
-        print(token,classroom_id)
+        classroom_id = data.get("classroom_id")
 
     try:
         token = Token.objects.get(key=token)
@@ -270,12 +453,13 @@ def LeaveClassroom(request):
             classroom.save()
 
             # removing the classroom from classroom array
-            student.ClassroomId.remove(classroom_id)
+            student.ClassroomId.remove(classroom.Id)
             student.save()
 
             # removing the contents having the student in that particular class
             classroom_content = ClassroomContent.objects.filter(ClassroomId=classroom_id,Sender=student.Id)
-            classroom_content.delete()
+            classroom_content.delete()          # head notice ko uploaded files bata remove garnu parne
+            print(classroom_content.Id)
 
             return JsonResponse({'message':'Sucess'},status=200)
     except:

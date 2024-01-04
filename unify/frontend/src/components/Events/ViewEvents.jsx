@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -56,6 +56,26 @@ function ViewEvents() {
   const [modalContent, setModalContent] = useState({ title: '', description: '', img: '' });
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
   const [displayedEvents, setDisplayedEvents] = useState(2); // Show 2 events by default
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async() => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/events/fetch_events/');
+        if(!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events: ', error);
+      }
+    };
+    
+    fetchEvents();
+    console.log(events)
+  }, [])
 
   const openModal = (title, description, img, Category) => {
     setModalContent({ title, description, img , Category});
