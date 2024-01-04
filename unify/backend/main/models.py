@@ -91,15 +91,6 @@ class Classroom(models.Model):
     InstructorName = models.CharField(max_length=30)
     StudentId = ArrayField(models.CharField(max_length=12,null=True,blank=True),default=list)
 
-# Attendance table
-class Attendance(models.Model):
-    Id = models.AutoField(primary_key=True)
-    Date = models.DateField()
-    Status = models.CharField(max_length=8)
-    CourseCode = models.ForeignKey(Course,to_field="Code",on_delete=models.CASCADE)
-    FacultyId = models.ForeignKey(Faculty,to_field="Id",on_delete=models.CASCADE)
-    StudentId = models.ForeignKey(Student,to_field="Id",on_delete=models.CASCADE)
-
 # to store the conversation of classroom ( like google classroom )
 class ClassroomConvo(models.Model):
     Id = models.AutoField(primary_key = True)
@@ -174,9 +165,10 @@ class CourseContent(models.Model):
     VerifierName = models.CharField(max_length=100,default=None)
 
 class Attendance(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    faculty = models.ForeignKey(Faculty, on_delete=models.PROTECT)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    # faculty = models.ForeignKey(Faculty, on_delete=models.PROTECT)
+    # course = models.ForeignKey(Course, on_delete=models.CASCADE)
     date = models.DateField()
     status = models.CharField(max_length=8)
 
@@ -186,9 +178,10 @@ class Location(models.Model):
     longitude = models.FloatField()
 
 class Session(models.Model):
-    faculty_id = models.CharField(max_length=12)
-    program_id = models.CharField(max_length=12)
-    batch = models.IntegerField()
+    # faculty_id = models.CharField(max_length=12)
+    # classroom_id = models.IntegerField()
+    # batch = models.IntegerField()
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
     latitude = models.FloatField()
     longitude = models.FloatField()
     start_time = models.TimeField()

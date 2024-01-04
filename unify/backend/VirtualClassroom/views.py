@@ -67,20 +67,29 @@ def start_session(request):
     if request.method == "POST":
         data = json.loads(request.body)
         print("Received data:", data)
-
-    try:
-        new_session = Session()
-
-        new_session.faculty_id = data.get('faculty_id')
-        new_session.program_id = data.get('program_id')
-        new_session.batch = data.get('batch')
-        new_session.latitude = data.get('latitude')
-        new_session.longitude = data.get('longitude')
+        classroom_id = data.get('classroom_id')
+        classroom_obj = Classroom.objects.get(Id=int(classroom_id))
         start_time_str = data.get('start_time')
         start_time = datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
-        new_session.start_time = start_time
 
-        new_session.save()
+    try:
+        # new_session = Session()
+
+        # new_session.classroom = classroom_obj
+        # new_session.latitude = data.get('latitude')
+        # new_session.longitude = data.get('longitude')
+        # start_time_str = data.get('start_time')
+        # start_time = datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+        # new_session.start_time = start_time
+
+        # new_session.save()
+
+        Session.objects.create(
+            classroom=classroom_obj,
+            latitude=data.get('latitude'),
+            longitude=data.get('longitude'),
+
+        )
 
         return JsonResponse({'message': 'success'}, status=200)
     except Exception as e:
@@ -114,14 +123,14 @@ def get_session(request):
 def get_attendance(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        course_id = data.get('course_id')
-        faculty_id = data.get('faculty_id')
+        classroom_id = data['classroom_id']
+        classroom_obj = Classroom.objects.get(Id=classroom_id)
     
     try:
-        attendance_list = Attendance.objects.filter(course_id=course_id,faculty_id=faculty_id)
+        attendance_list = Attendance.objects.filter(classroom=classroom_obj)
         # print(attendance_list)
         # print(list(attendance_list))
-        _attendance = serializers.serialize('json', attendance_list)
+        # _attendance = serializers.serialize('json', attendance_list)
         __attendance = [model_to_dict(item) for item in attendance_list]
         print(__attendance)
         return JsonResponse(__attendance, safe=False)
