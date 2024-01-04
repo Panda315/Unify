@@ -84,6 +84,9 @@ function ViewEvents() {
   const handleSeeMore = () => {
     setDisplayedEvents(displayedEvents + 2); //display two more events when see more is clicked
   };
+  const handleShowLess = () => {
+    setDisplayedEvents(Math.max(displayedEvents - 2, 2)); // reduce the number of displayed events by 2, but ensure at least 2 events are shown
+  };
   
   const tileContent = ({ date, view }) => {
     if (view === 'month' && date.getDate() === new Date().getDate()) {
@@ -145,14 +148,17 @@ function ViewEvents() {
     </Box>
   </SimpleGrid>
 ))}
-  
-  {sectionsData.length > displayedEvents && (
-  <>
-     <Button mt="2" colorScheme="blue" onClick={handleSeeMore}>
-      See more
-    </Button>
-  </>
-)}
+   {sectionsData.length > displayedEvents && (
+        <Button mt="2" colorScheme="blue" onClick={handleSeeMore}>
+          See more
+        </Button>
+      )}
+      {displayedEvents > 2 && (
+        <Button mt="2" ml="2"   margin-bottom= "2em"
+        colorScheme="red" onClick={handleShowLess}>
+          Show less
+        </Button>
+      )}
 
     
 
