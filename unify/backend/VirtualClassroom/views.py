@@ -421,6 +421,7 @@ def LoadAllSubmission(request):
     if request.method == "POST":
         data = json.loads(request.body)
         head = data['head']
+        print(head)
 
     try:
         content = ClassroomContent.objects.get(Id=head)
